@@ -20,7 +20,7 @@
 		"strict": true,
 		"target": "ES2022",
 		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-		"types": ["bun-types"],
+		"types": ["bun"],
 		"useDefineForClassFields": true,
 		"verbatimModuleSyntax": true
 	},
