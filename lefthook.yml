@@ -1,20 +1,23 @@
 pre-commit:
   commands:
     check-frontend:
-      glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
-      run: bunx @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
+      glob:
+        - "frontend/*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
+      run: bunx @biomejs/biome check --no-errors-on-unmatched --files-ignore-unknown=true --write {staged_files}
       stage_fixed: true
+      root: frontend
     check-backend:
-      glob: "*.py"
+      glob: "backend/**/*.py"
       run: uvx ruff check --fix --output-format=github {staged_files}
       stage_fixed: true
+      root: backend
 
 pre-push:
   commands:
     check-frontend:
-      glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
-      run: bunx @biomejs/biome check --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {push_files}
-
+      glob:
+        - "**/*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
+      run: bunx @biomejs/biome check --no-errors-on-unmatched --files-ignore-unknown=true --config-file=./frontend/biome.json --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {push_files}
     check-backend:
-      glob: "*.py"
+      glob: "backend/**/*.py"
       run: uvx ruff check --output-format=github {push_files}

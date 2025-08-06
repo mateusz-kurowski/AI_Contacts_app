@@ -12,7 +12,8 @@
 		"enabled": true
 	},
 	"files": {
-		"ignoreUnknown": false
+		"ignoreUnknown": false,
+		"includes": ["**/*.{js,ts,jsx,tsx,json,jsonc}"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -29,6 +30,10 @@
 		},
 		"enabled": true,
 		"rules": {
+			"correctness": {
+				"noUnusedImports": "error",
+				"noUnusedVariables": "error"
+			},
 			"recommended": true
 		}
 	},

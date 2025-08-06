@@ -1,0 +1,27 @@
+meta {
+  name: Verify Contact Deleted
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{url}}/contacts/{{secondContactId}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
+
+tests {
+  test("Response status code is 404 for deleted contact", function () {
+    expect(res.getStatus()).to.equal(404);
+  });
+  
+  test("Response contains error message", function () {
+    const responseData = res.getBody();
+    expect(responseData).to.have.property('detail');
+    expect(responseData.detail).to.equal("Contact not found");
+  });
+}

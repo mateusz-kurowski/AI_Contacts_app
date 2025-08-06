@@ -1,0 +1,33 @@
+meta {
+  name: Get Contact by ID
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{url}}/contacts/{{contactId}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
+
+tests {
+  test("Response status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response contains contact data", function () {
+    const responseData = res.getBody();
+    expect(responseData).to.have.property('id');
+    expect(responseData).to.have.property('name');
+    expect(responseData).to.have.property('phone');
+  });
+  
+  test("Contact ID matches requested ID", function () {
+    const responseData = res.getBody();
+    expect(responseData.id).to.equal(parseInt(bru.getVar("contactId")));
+  });
+}

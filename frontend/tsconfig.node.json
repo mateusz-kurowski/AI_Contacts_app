@@ -19,6 +19,7 @@
 		"strict": true,
 		"target": "ES2023",
 		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+		"types": ["bun-types"],
 		"verbatimModuleSyntax": true
 	},
 	"include": ["vite.config.ts"]

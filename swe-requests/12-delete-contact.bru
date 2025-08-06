@@ -1,0 +1,27 @@
+meta {
+  name: Delete Contact
+  type: http
+  seq: 12
+}
+
+delete {
+  url: {{url}}/contacts/{{secondContactId}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
+
+tests {
+  test("Response status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response contains success message", function () {
+    const responseData = res.getBody();
+    expect(responseData).to.have.property('message');
+    expect(responseData.message).to.equal("Contact deleted successfully");
+  });
+}

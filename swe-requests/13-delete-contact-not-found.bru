@@ -1,0 +1,27 @@
+meta {
+  name: Delete Contact - Not Found
+  type: http
+  seq: 13
+}
+
+delete {
+  url: {{url}}/contacts/99999
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
+
+tests {
+  test("Response status code is 404", function () {
+    expect(res.getStatus()).to.equal(404);
+  });
+  
+  test("Response contains error message", function () {
+    const responseData = res.getBody();
+    expect(responseData).to.have.property('detail');
+    expect(responseData.detail).to.equal("Contact not found");
+  });
+}

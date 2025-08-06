@@ -1,0 +1,41 @@
+meta {
+  name: Get All Contacts
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{url}}/contacts/
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
+
+tests {
+  test("Response status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response is an array", function () {
+    const responseData = res.getBody();
+    expect(responseData).to.be.an('array');
+  });
+  
+  test("At least one contact exists", function () {
+    const responseData = res.getBody();
+    expect(responseData.length).to.be.greaterThan(0);
+  });
+  
+  test("Contacts have required properties", function () {
+    const responseData = res.getBody();
+    if (responseData.length > 0) {
+      const contact = responseData[0];
+      expect(contact).to.have.property('id');
+      expect(contact).to.have.property('name');
+      expect(contact).to.have.property('phone');
+    }
+  });
+}

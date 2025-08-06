@@ -1,0 +1,42 @@
+meta {
+  name: Update Contact
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{url}}/contacts/{{contactId}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "John Doe Updated",
+    "phone": "+1987654321"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
+
+tests {
+  test("Response status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response contains updated contact data", function () {
+    const responseData = res.getBody();
+    expect(responseData).to.have.property('id');
+    expect(responseData).to.have.property('name');
+    expect(responseData).to.have.property('phone');
+    expect(responseData.name).to.equal("John Doe Updated");
+    expect(responseData.phone).to.equal("+1987654321");
+  });
+  
+  test("Contact ID remains the same", function () {
+    const responseData = res.getBody();
+    expect(responseData.id).to.equal(parseInt(bru.getVar("contactId")));
+  });
+}

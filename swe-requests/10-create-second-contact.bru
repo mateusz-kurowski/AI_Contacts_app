@@ -1,0 +1,42 @@
+meta {
+  name: Create Second Contact
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{url}}/contacts/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Alice Johnson",
+    "phone": "+5555555555"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
+
+tests {
+  test("Response status code is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response contains contact data", function () {
+    const responseData = res.getBody();
+    expect(responseData).to.have.property('id');
+    expect(responseData).to.have.property('name');
+    expect(responseData).to.have.property('phone');
+    expect(responseData.name).to.equal("Alice Johnson");
+    expect(responseData.phone).to.equal("+5555555555");
+  });
+  
+  test("Second contact ID is stored", function () {
+    const responseData = res.getBody();
+    bru.setVar("secondContactId", responseData.id);
+  });
+}
