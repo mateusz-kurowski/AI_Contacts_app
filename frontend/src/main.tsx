@@ -1,12 +1,16 @@
+import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Route, Routes } from "react-router";
-import App from "./App";
+import { createBrowserRouter, RouterProvider } from "react-router";
+import GlobalProviders from "./components/providers/GlobalProviders";
+import { routes } from "./routes";
+
+const router = createBrowserRouter(routes);
 
 // biome-ignore lint/style/noNonNullAssertion: we know root exists
 ReactDOM.createRoot(document.getElementById("root")!).render(
-	<BrowserRouter>
-		<Routes>
-			<Route element={<App />} path="/" />
-		</Routes>
-	</BrowserRouter>,
+	<React.StrictMode>
+		<GlobalProviders>
+			<RouterProvider router={router} />
+		</GlobalProviders>
+	</React.StrictMode>,
 );
