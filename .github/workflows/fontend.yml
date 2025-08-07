@@ -35,7 +35,7 @@ jobs:
         with:
           run_install: |
             cwd: ./frontend
-            args: --frozen-lockfile
+            args: [--frozen-lockfile]
 
       - uses: actions/setup-node@v4
         with:
