@@ -1,0 +1,17 @@
+{
+	"python.defaultInterpreterPath": "./backend/.venv/bin/python",
+	"python.terminal.activateEnvironment": true,
+	"python.analysis.autoSearchPaths": true,
+	"python.analysis.autoImportCompletions": true,
+	"files.associations": {
+		"*.env": "dotenv"
+	},
+	"python.linting.enabled": true,
+	"python.formatting.provider": "black",
+	"[python]": {
+		"editor.formatOnSave": true,
+		"editor.codeActionsOnSave": {
+			"source.organizeImports": "explicit"
+		}
+	}
+}
