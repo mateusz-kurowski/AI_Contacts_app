@@ -35,7 +35,7 @@ jobs:
         with:
           package_json_file: frontend/package.json       
           run_install: |
-            cwd: frontend
+            cwd: frontend/
             args: [--frozen-lockfile]
 
       - uses: actions/setup-node@v4
