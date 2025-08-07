@@ -19,6 +19,7 @@
 		"node": ">=22.18.0"
 	},
 	"name": "frontend",
+	"packageManager": "pnpm@10.14.0",
 	"private": true,
 	"scripts": {
 		"build": "tsc -b && vite build",
