@@ -1,16 +1,22 @@
-from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy.orm import Session
-from typing import List
 from dotenv import load_dotenv
 
-from db.db import get_db
+load_dotenv(dotenv_path=".env")
+from typing import List
+
+from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+
 from db import crud
-from db.schema import ContactCreate, ContactUpdate, ContactOut
+from db.db import get_db
+from db.schema import ContactCreate, ContactOut, ContactUpdate
 
-load_dotenv()
+app = FastAPI(
+    title="Contact Management API",
+    version="1.0.0",
+)
 
-app = FastAPI(title="Contact Management API", version="1.0.0")
-
+app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173"])
 
 @app.get("/")
 def read_root():
