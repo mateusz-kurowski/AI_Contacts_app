@@ -1,28 +1,17 @@
 meta {
-  name: Update Contact - Not Found
+  name: Verify Contact Deleted
   type: http
-  seq: 9
+  seq: 11
 }
 
-put {
-  url: {{url}}/contacts/99999
-  body: json
+get {
+  url: {{url}}/contacts/{{secondContactId}}
+  body: none
   auth: inherit
 }
 
-body:json {
-  {
-    "name": "Non-existent Contact",
-    "phone": "+1111111111"
-  }
-}
-
-settings {
-  encodeUrl: true
-}
-
 tests {
-  test("Response status code is 404", function () {
+  test("Response status code is 404 for deleted contact", function () {
     expect(res.getStatus()).to.equal(404);
   });
   
@@ -31,4 +20,8 @@ tests {
     expect(responseData).to.have.property('detail');
     expect(responseData.detail).to.equal("Contact not found");
   });
+}
+
+settings {
+  encodeUrl: true
 }

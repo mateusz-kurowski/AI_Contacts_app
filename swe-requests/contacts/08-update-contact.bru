@@ -17,10 +17,6 @@ body:json {
   }
 }
 
-settings {
-  encodeUrl: true
-}
-
 tests {
   test("Response status code is 200", function () {
     expect(res.getStatus()).to.equal(200);
@@ -39,4 +35,8 @@ tests {
     const responseData = res.getBody();
     expect(responseData.id).to.equal(parseInt(bru.getVar("contactId")));
   });
+}
+
+settings {
+  encodeUrl: true
 }

@@ -1,17 +1,20 @@
 meta {
-  name: Delete Contact - Not Found
+  name: Update Contact - Not Found
   type: http
-  seq: 13
+  seq: 4
 }
 
-delete {
+put {
   url: {{url}}/contacts/99999
-  body: none
+  body: json
   auth: inherit
 }
 
-settings {
-  encodeUrl: true
+body:json {
+  {
+    "name": "Non-existent Contact",
+    "phone": "+1111111111"
+  }
 }
 
 tests {
@@ -24,4 +27,8 @@ tests {
     expect(responseData).to.have.property('detail');
     expect(responseData.detail).to.equal("Contact not found");
   });
+}
+
+settings {
+  encodeUrl: true
 }

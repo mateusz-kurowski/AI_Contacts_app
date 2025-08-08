@@ -1,0 +1,21 @@
+meta {
+  name: hello
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}/chat
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "user_input":"hello, how are you?"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

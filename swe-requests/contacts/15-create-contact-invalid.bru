@@ -1,7 +1,7 @@
 meta {
   name: Create Contact - Invalid Data
   type: http
-  seq: 15
+  seq: 12
 }
 
 post {
@@ -17,10 +17,6 @@ body:json {
   }
 }
 
-settings {
-  encodeUrl: true
-}
-
 tests {
   test("Response status code is 422 for validation error", function () {
     expect(res.getStatus()).to.equal(422);
@@ -31,4 +27,8 @@ tests {
     expect(responseData).to.have.property('detail');
     expect(responseData.detail).to.be.an('array');
   });
+}
+
+settings {
+  encodeUrl: true
 }

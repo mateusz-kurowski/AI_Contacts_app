@@ -1,17 +1,18 @@
 meta {
   name: Get All Contacts with Pagination
   type: http
-  seq: 5
+  seq: 2
 }
 
 get {
-  url: {{url}}/contacts/?skip=0&limit=10
+  url: {{url}}/contacts?skip=0&limit=10
   body: none
   auth: inherit
 }
 
-settings {
-  encodeUrl: true
+params:query {
+  skip: 0
+  limit: 10
 }
 
 tests {
@@ -28,4 +29,8 @@ tests {
     const responseData = res.getBody();
     expect(responseData.length).to.be.at.most(10);
   });
+}
+
+settings {
+  encodeUrl: true
 }

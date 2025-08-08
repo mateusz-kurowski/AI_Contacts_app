@@ -1,17 +1,13 @@
 meta {
   name: Health Check
   type: http
-  seq: 1
+  seq: 2
 }
 
 get {
   url: {{url}}/
   body: none
   auth: inherit
-}
-
-settings {
-  encodeUrl: true
 }
 
 tests {
@@ -23,4 +19,8 @@ tests {
     const responseData = res.getBody();
     expect(responseData).to.have.property('message');
   });
+}
+
+settings {
+  encodeUrl: true
 }

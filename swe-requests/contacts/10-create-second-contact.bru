@@ -1,7 +1,7 @@
 meta {
   name: Create Second Contact
   type: http
-  seq: 10
+  seq: 13
 }
 
 post {
@@ -15,10 +15,6 @@ body:json {
     "name": "Alice Johnson",
     "phone": "+5555555555"
   }
-}
-
-settings {
-  encodeUrl: true
 }
 
 tests {
@@ -39,4 +35,8 @@ tests {
     const responseData = res.getBody();
     bru.setVar("secondContactId", responseData.id);
   });
+}
+
+settings {
+  encodeUrl: true
 }

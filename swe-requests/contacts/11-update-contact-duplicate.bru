@@ -1,7 +1,7 @@
 meta {
   name: Update Contact - Duplicate Phone
   type: http
-  seq: 11
+  seq: 7
 }
 
 put {
@@ -17,10 +17,6 @@ body:json {
   }
 }
 
-settings {
-  encodeUrl: true
-}
-
 tests {
   test("Response status code is 400 for duplicate phone", function () {
     expect(res.getStatus()).to.equal(400);
@@ -31,4 +27,8 @@ tests {
     expect(responseData).to.have.property('detail');
     expect(responseData.detail).to.equal("Phone number already registered");
   });
+}
+
+settings {
+  encodeUrl: true
 }
