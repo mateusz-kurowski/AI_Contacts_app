@@ -1,22 +1,33 @@
 services:
+  caddy:
+    image: caddy:2.8.4
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - $PWD/conf:/etc/caddy
+      - $PWD/site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+
   backend:
     build: ./backend
-    ports:
-      - "8000:8000"
+    restart: unless-stopped
     depends_on:
       - db
     env_file:
       - ./backend/.env
     volumes:
       - ./backend:/app
-    working_dir: /app
 
   db:
     image: postgres
     restart: always
     shm_size: 128mb
-    ports:
-      - "5432:5432"
 
     env_file:
       - ./db/.env
@@ -25,7 +36,8 @@ services:
   adminer:
     image: adminer
     restart: always
-    ports:
-      - 8080:8080
+
 volumes:
     db_data:  
+    caddy_data:
+    caddy_config:

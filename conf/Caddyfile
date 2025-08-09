@@ -1,0 +1,23 @@
+contacts.mkurowski.dev {
+    root * /srv
+    file_server
+    
+    try_files {path} /index.html
+    
+    encode gzip
+    
+    header {
+        X-Content-Type-Options nosniff
+        X-XSS-Protection "1; mode=block"
+        X-Frame-Options DENY
+        Referrer-Policy strict-origin-when-cross-origin
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    }
+
+    @www host www.contacts.mkurowski.dev
+    redir @www https://contacts.mkurowski.dev{uri} permanent
+}
+
+http://contacts.mkurowski.dev {
+    redir https://contacts.mkurowski.dev{uri} permanent
+}
