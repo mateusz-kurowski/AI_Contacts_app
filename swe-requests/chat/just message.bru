@@ -1,0 +1,21 @@
+meta {
+  name: just message
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/chat
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "content":"Add to my phone book Mateusz. His phone number is +48 987 654 321."
+  }
+}
+
+settings {
+  encodeUrl: true
+}

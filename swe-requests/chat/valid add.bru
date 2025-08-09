@@ -1,10 +1,10 @@
 meta {
-  name: hello
+  name: valid add
   type: http
   seq: 1
 }
 
-get {
+post {
   url: {{url}}/chat
   body: json
   auth: inherit
@@ -12,7 +12,7 @@ get {
 
 body:json {
   {
-    "user_input":"hello, how are you?"
+    "content":"Add to my phone book Mateusz. His phone number is +48 987 654 321."
   }
 }
 
