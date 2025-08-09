@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "../button";
+import { Button } from "@/components/ui/button";
 import {
 	Form,
 	FormControl,
@@ -10,13 +10,13 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "../form";
-import { Input } from "../input";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import "react-international-phone/style.css";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PhoneNumberFormat } from "google-libphonenumber";
 import { PhoneInput } from "react-international-phone";
-import { addContact } from "../../../queries/contacts";
+import { addContact } from "@/queries/contacts";
 import { phoneUtil, validatePhoneNumber } from "./validators";
 
 export const contactFormSchema = z.object({

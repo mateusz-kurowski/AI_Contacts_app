@@ -1,9 +1,9 @@
 import { TooltipContent } from "@radix-ui/react-tooltip";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight, Plus } from "lucide-react";
+import ContactForm from "@/components/features/contacts/ContactForm/ContactForm";
 import { getContacts } from "../../../queries/contacts";
 import { Button } from "../../ui/button";
-import ContactForm from "../../ui/ContactForm/ContactForm";
 import { Dialog, DialogContent, DialogTrigger } from "../../ui/dialog";
 import { Input } from "../../ui/input";
 import {

@@ -189,45 +189,41 @@ export function Chat({
 	);
 
 	return (
-		<ChatContainer className={className}>
-			{isEmpty && append && suggestions ? (
-				<PromptSuggestions
-					append={append}
-					label="Try these prompts ✨"
-					suggestions={suggestions}
-				/>
-			) : null}
+    <ChatContainer className={className}>
+      {isEmpty && append && suggestions ? (
+        <PromptSuggestions
+          append={append}
+          label="Try these prompts ✨"
+          suggestions={suggestions}
+        />
+      ) : null}
 
-			{messages.length > 0 ? (
-				<ChatMessages messages={messages}>
-					<MessageList
-						isTyping={isTyping}
-						messageOptions={messageOptions}
-						messages={messages}
-					/>
-				</ChatMessages>
-			) : null}
+      {messages.length > 0 ? (
+        <ChatMessages messages={messages}>
+          <MessageList
+            isTyping={isTyping}
+            messageOptions={messageOptions}
+            messages={messages}
+          />
+        </ChatMessages>
+      ) : null}
 
-			<ChatForm
-				className="mt-auto"
-				handleSubmit={handleSubmit}
-				isPending={isGenerating || isTyping}
-			>
-				{({ files, setFiles }) => (
-					<MessageInput
-						allowAttachments
-						files={files}
-						isGenerating={isGenerating}
-						onChange={handleInputChange}
-						setFiles={setFiles}
-						stop={handleStop}
-						transcribeAudio={transcribeAudio}
-						value={input}
-					/>
-				)}
-			</ChatForm>
-		</ChatContainer>
-	);
+      <ChatForm className="mt-auto" handleSubmit={handleSubmit}>
+        {({ files, setFiles }) => (
+          <MessageInput
+            allowAttachments
+            files={files}
+            isGenerating={isGenerating}
+            onChange={handleInputChange}
+            setFiles={setFiles}
+            stop={handleStop}
+            transcribeAudio={transcribeAudio}
+            value={input}
+          />
+        )}
+      </ChatForm>
+    </ChatContainer>
+  );
 }
 Chat.displayName = "Chat";
 
@@ -289,39 +285,38 @@ export const ChatContainer = forwardRef<
 ChatContainer.displayName = "ChatContainer";
 
 interface ChatFormProps {
-	className?: string;
-	isPending: boolean;
-	handleSubmit: (
-		event?: { preventDefault?: () => void },
-		options?: { experimental_attachments?: FileList },
-	) => void;
-	children: (props: {
-		files: File[] | null;
-		setFiles: React.Dispatch<React.SetStateAction<File[] | null>>;
-	}) => ReactElement;
+  className?: string;
+  handleSubmit: (
+    event?: { preventDefault?: () => void },
+    options?: { experimental_attachments?: FileList }
+  ) => void;
+  children: (props: {
+    files: File[] | null;
+    setFiles: React.Dispatch<React.SetStateAction<File[] | null>>;
+  }) => ReactElement;
 }
 
 export const ChatForm = forwardRef<HTMLFormElement, ChatFormProps>(
-	({ children, handleSubmit, isPending, className }, ref) => {
-		const [files, setFiles] = useState<File[] | null>(null);
+  ({ children, handleSubmit, className }, ref) => {
+    const [files, setFiles] = useState<File[] | null>(null);
 
-		const onSubmit = (event: React.FormEvent) => {
-			if (!files) {
-				handleSubmit(event);
-				return;
-			}
+    const onSubmit = (event: React.FormEvent) => {
+      if (!files) {
+        handleSubmit(event);
+        return;
+      }
 
-			const fileList = createFileList(files);
-			handleSubmit(event, { experimental_attachments: fileList });
-			setFiles(null);
-		};
+      const fileList = createFileList(files);
+      handleSubmit(event, { experimental_attachments: fileList });
+      setFiles(null);
+    };
 
-		return (
-			<form className={className} onSubmit={onSubmit} ref={ref}>
-				{children({ files, setFiles })}
-			</form>
-		);
-	},
+    return (
+      <form className={className} onSubmit={onSubmit} ref={ref}>
+        {children({ files, setFiles })}
+      </form>
+    );
+  }
 );
 ChatForm.displayName = "ChatForm";
 

@@ -1,13 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import {
-	ArrowUp,
-	Info,
-	Loader2,
-	Mic,
-	Paperclip,
-	Square,
-	X,
-} from "lucide-react";
+import { ArrowUp, Info, Loader2, Mic, Paperclip, Square } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { omit } from "remeda";
@@ -185,134 +177,135 @@ export function MessageInput({
 	});
 
 	return (
-		<div
-			className="relative flex w-full"
-			onDragLeave={onDragLeave}
-			onDragOver={onDragOver}
-			onDrop={onDrop}
-		>
-			{enableInterrupt && (
-				<InterruptPrompt
-					close={() => setShowInterruptPrompt(false)}
-					isOpen={showInterruptPrompt}
-				/>
-			)}
+    // biome-ignore lint/a11y/noStaticElementInteractions: ext. lib
+    <div
+      className="relative flex w-full"
+      onDragLeave={onDragLeave}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+    >
+      {enableInterrupt && (
+        <InterruptPrompt
+          close={() => setShowInterruptPrompt(false)}
+          isOpen={showInterruptPrompt}
+        />
+      )}
 
-			<RecordingPrompt
-				isVisible={isRecording}
-				onStopRecording={stopRecording}
-			/>
+      <RecordingPrompt
+        isVisible={isRecording}
+        onStopRecording={stopRecording}
+      />
 
-			<div className="relative flex w-full items-center space-x-2">
-				<div className="relative flex-1">
-					<textarea
-						aria-label="Write your prompt here"
-						className={cn(
-							"z-10 w-full grow resize-none rounded-xl border border-input bg-background p-3 pr-24 text-sm ring-offset-background transition-[border] placeholder:text-muted-foreground focus-visible:border-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
-							showFileList && "pb-16",
-							className,
-						)}
-						onKeyDown={onKeyDown}
-						onPaste={onPaste}
-						placeholder={placeholder}
-						ref={textAreaRef}
-						{...(props.allowAttachments
-							? omit(props, ["allowAttachments", "files", "setFiles"])
-							: omit(props, ["allowAttachments"]))}
-					/>
+      <div className="relative flex w-full items-center space-x-2">
+        <div className="relative flex-1">
+          <textarea
+            aria-label="Write your prompt here"
+            className={cn(
+              "z-10 w-full grow resize-none rounded-xl border border-input bg-background p-3 pr-24 text-sm ring-offset-background transition-[border] placeholder:text-muted-foreground focus-visible:border-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
+              showFileList && "pb-16",
+              className
+            )}
+            onKeyDown={onKeyDown}
+            onPaste={onPaste}
+            placeholder={placeholder}
+            ref={textAreaRef}
+            {...(props.allowAttachments
+              ? omit(props, ["allowAttachments", "files", "setFiles"])
+              : omit(props, ["allowAttachments"]))}
+          />
 
-					{props.allowAttachments && (
-						<div className="absolute inset-x-3 bottom-0 z-20 overflow-x-scroll py-3">
-							<div className="flex space-x-3">
-								<AnimatePresence mode="popLayout">
-									{props.files?.map((file) => {
-										return (
-											<FilePreview
-												file={file}
-												key={file.name + String(file.lastModified)}
-												onRemove={() => {
-													props.setFiles((files) => {
-														if (!files) return null;
+          {props.allowAttachments && (
+            <div className="absolute inset-x-3 bottom-0 z-20 overflow-x-scroll py-3">
+              <div className="flex space-x-3">
+                <AnimatePresence mode="popLayout">
+                  {props.files?.map((file) => {
+                    return (
+                      <FilePreview
+                        file={file}
+                        key={file.name + String(file.lastModified)}
+                        onRemove={() => {
+                          props.setFiles((files) => {
+                            if (!files) return null;
 
-														const filtered = Array.from(files).filter(
-															(f) => f !== file,
-														);
-														if (filtered.length === 0) return null;
-														return filtered;
-													});
-												}}
-											/>
-										);
-									})}
-								</AnimatePresence>
-							</div>
-						</div>
-					)}
-				</div>
-			</div>
+                            const filtered = Array.from(files).filter(
+                              (f) => f !== file
+                            );
+                            if (filtered.length === 0) return null;
+                            return filtered;
+                          });
+                        }}
+                      />
+                    );
+                  })}
+                </AnimatePresence>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
 
-			<div className="absolute right-3 top-3 z-20 flex gap-2">
-				{props.allowAttachments && (
-					<Button
-						aria-label="Attach a file"
-						className="h-8 w-8"
-						onClick={async () => {
-							const files = await showFileUploadDialog();
-							addFiles(files);
-						}}
-						size="icon"
-						type="button"
-						variant="outline"
-					>
-						<Paperclip className="h-4 w-4" />
-					</Button>
-				)}
-				{isSpeechSupported && (
-					<Button
-						aria-label="Voice input"
-						className={cn("h-8 w-8", isListening && "text-primary")}
-						onClick={toggleListening}
-						size="icon"
-						type="button"
-						variant="outline"
-					>
-						<Mic className="h-4 w-4" />
-					</Button>
-				)}
-				{isGenerating && stop ? (
-					<Button
-						aria-label="Stop generating"
-						className="h-8 w-8"
-						onClick={stop}
-						size="icon"
-						type="button"
-					>
-						<Square className="h-3 w-3 animate-pulse" fill="currentColor" />
-					</Button>
-				) : (
-					<Button
-						aria-label="Send message"
-						className="h-8 w-8 transition-opacity"
-						disabled={props.value === "" || isGenerating}
-						size="icon"
-						type="submit"
-					>
-						<ArrowUp className="h-5 w-5" />
-					</Button>
-				)}
-			</div>
+      <div className="absolute right-3 top-3 z-20 flex gap-2">
+        {props.allowAttachments && (
+          <Button
+            aria-label="Attach a file"
+            className="h-8 w-8"
+            onClick={async () => {
+              const files = await showFileUploadDialog();
+              addFiles(files);
+            }}
+            size="icon"
+            type="button"
+            variant="outline"
+          >
+            <Paperclip className="h-4 w-4" />
+          </Button>
+        )}
+        {isSpeechSupported && (
+          <Button
+            aria-label="Voice input"
+            className={cn("h-8 w-8", isListening && "text-primary")}
+            onClick={toggleListening}
+            size="icon"
+            type="button"
+            variant="outline"
+          >
+            <Mic className="h-4 w-4" />
+          </Button>
+        )}
+        {isGenerating && stop ? (
+          <Button
+            aria-label="Stop generating"
+            className="h-8 w-8"
+            onClick={stop}
+            size="icon"
+            type="button"
+          >
+            <Square className="h-3 w-3 animate-pulse" fill="currentColor" />
+          </Button>
+        ) : (
+          <Button
+            aria-label="Send message"
+            className="h-8 w-8 transition-opacity"
+            disabled={props.value === "" || isGenerating}
+            size="icon"
+            type="submit"
+          >
+            <ArrowUp className="h-5 w-5" />
+          </Button>
+        )}
+      </div>
 
-			{props.allowAttachments && <FileUploadOverlay isDragging={isDragging} />}
+      {props.allowAttachments && <FileUploadOverlay isDragging={isDragging} />}
 
-			<RecordingControls
-				audioStream={audioStream}
-				isRecording={isRecording}
-				isTranscribing={isTranscribing}
-				onStopRecording={stopRecording}
-				textAreaHeight={textAreaHeight}
-			/>
-		</div>
-	);
+      <RecordingControls
+        audioStream={audioStream}
+        isRecording={isRecording}
+        isTranscribing={isTranscribing}
+        onStopRecording={stopRecording}
+        textAreaHeight={textAreaHeight}
+      />
+    </div>
+  );
 }
 MessageInput.displayName = "MessageInput";
 
