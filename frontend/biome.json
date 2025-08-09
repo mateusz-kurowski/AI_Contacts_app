@@ -13,7 +13,13 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": ["**/*.{js,ts,jsx,tsx,json,jsonc}"]
+		"includes": [
+			"**/*.{js,ts,jsx,tsx,json,jsonc}",
+			"!**/node_modules",
+			"**/src/components/ui/**",
+			"**/src/hooks/**",
+			"**/src/lib/**"
+		]
 	},
 	"formatter": {
 		"enabled": true,
