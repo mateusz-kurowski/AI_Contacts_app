@@ -1,0 +1,14 @@
+import os
+from google import genai
+from google.genai import types
+from src.config.config import app_config
+
+API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+if not API_KEY:
+    raise RuntimeError("Missing GEMINI_API_KEY/GOOGLE_API_KEY environment variable")
+
+gemma_client = genai.Client(api_key=API_KEY)
+
+default_config = types.GenerateContentConfig(
+    **app_config.model_client.model_dump(),
+)

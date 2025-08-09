@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel, constr
 
 
@@ -20,3 +22,14 @@ class ContactOut(ContactBase):
 
     class Config:
         orm_mode = True
+
+
+class ChatResponse(BaseModel):
+    content: str
+    id: str
+    role: Literal["user", "assistant"]
+    createdAt: str
+
+
+class NewChatMessage(BaseModel):
+    content: str
