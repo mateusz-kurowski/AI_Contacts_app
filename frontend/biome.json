@@ -16,9 +16,9 @@
 		"includes": [
 			"**/*.{js,ts,jsx,tsx,json,jsonc}",
 			"!**/node_modules",
-			"**/src/components/ui/**",
-			"**/src/hooks/**",
-			"**/src/lib/**"
+			"!**/src/components/ui/**",
+			"!**/src/hooks/**",
+			"!**/src/lib/**"
 		]
 	},
 	"formatter": {
