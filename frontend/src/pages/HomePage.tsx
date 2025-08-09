@@ -1,11 +1,12 @@
-import SideBar from "../components/layout/SideBar";
+import ChatForm from "../components/features/chat/ChatForm/ChatForm";
+import ChatHistory from "../components/features/chat/ChatHistory/ChatHistory";
 
 const HomePage = () => {
 	return (
-		<>
-			<div>HomePage</div>
-			<SideBar />
-		</>
+		<div className="flex flex-col gap-2 items-center h-full">
+			<ChatHistory />
+			<ChatForm />
+		</div>
 	);
 };
 

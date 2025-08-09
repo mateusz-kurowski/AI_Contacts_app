@@ -3,6 +3,10 @@ pre-commit:
     check-frontend:
       glob:
         - "frontend/*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
+      exclude:
+        - "frontend/src/components/ui/**"
+        - "frontend/src/lib/**"
+
       run: npx @biomejs/biome check --no-errors-on-unmatched --files-ignore-unknown=true --write {staged_files}
       stage_fixed: true
       root: frontend
@@ -17,6 +21,9 @@ pre-push:
     check-frontend:
       glob:
         - "frontend/*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
+      exclude:
+        - "frontend/src/components/ui/**"
+        - "frontend/src/lib/**"
       run: npx @biomejs/biome check   --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {push_files}
       root: frontend
 
