@@ -53,7 +53,7 @@ const ContactsSideBar = () => {
 						className="tooltip-custom tooltip-collapsed-only"
 						side="left"
 					>
-						Toggle sidebar
+						Expand sidebar
 					</TooltipContent>
 				</Tooltip>
 
