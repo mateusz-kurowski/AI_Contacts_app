@@ -15,6 +15,7 @@ def get_chat_service() -> ChatService:
 
 
 @router.post("/", response_model=ChatResponse)
+@router.post("", response_model=ChatResponse)
 def read_chat(input: NewChatMessage, svc: ChatService = Depends(get_chat_service)):
     response = svc.get_chat_response(input.content)
     # Return ISO string

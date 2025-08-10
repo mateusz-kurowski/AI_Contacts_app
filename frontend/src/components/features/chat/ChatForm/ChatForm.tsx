@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Send } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -19,6 +19,7 @@ import { Textarea } from "../../../ui/textarea";
 import { type ChatFormData, chatFormSchema } from "./data";
 
 const ChatForm = () => {
+	const queryClient = useQueryClient();
 	const chatForm = useForm<z.infer<typeof chatFormSchema>>({
 		defaultValues: {
 			content: "",
@@ -52,6 +53,7 @@ const ChatForm = () => {
 			setIsTyping(true);
 			const response = await chatMutation.mutateAsync(data);
 			addMessage({ ...response, createdAt: new Date(response.createdAt) });
+			queryClient.invalidateQueries({ queryKey: ["contacts"] });
 		} catch {
 			setIsTyping(false);
 			toast.error("Error sending message", {

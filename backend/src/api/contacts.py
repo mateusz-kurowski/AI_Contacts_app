@@ -1,16 +1,17 @@
+from typing import List
+
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from src.db.db import get_db
 from src.db.schemas import ContactCreate, ContactOut, ContactUpdate
-from fastapi import Depends, HTTPException, APIRouter
-from typing import List
-
 from src.services.contact_service import ContactService, get_contact_service
 
 router = APIRouter(prefix="/contacts", tags=["contacts"])
 
 
 @router.post("/", response_model=ContactOut)
+@router.post("", response_model=ContactOut)
 def create_contact(
     contact: ContactCreate,
     db: Session = Depends(get_db),
@@ -25,6 +26,7 @@ def create_contact(
 
 
 @router.get("/", response_model=List[ContactOut])
+@router.get("", response_model=List[ContactOut])
 def read_contacts(
     skip: int = 0,
     limit: int = 100,
