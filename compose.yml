@@ -8,8 +8,6 @@ services:
       - $PWD/site:/usr/share/nginx/html
     depends_on:
       - backend
-    networks:
-      - app-network
 
   backend:
     build: ./backend
