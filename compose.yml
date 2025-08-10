@@ -1,12 +1,16 @@
 services:
-  nginx:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
+  db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+
+    env_file:
+      - ./db/.env
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  adminer:
+    image: adminer
+    restart: always
   migrate:
     build:
       context: ./backend
@@ -35,18 +39,14 @@ services:
     volumes:
       - ./backend:/app
 
-  db:
-    image: postgres
-    restart: always
-    shm_size: 128mb
-
-    env_file:
-      - ./db/.env
-    volumes:
-      - db_data:/var/lib/postgresql/data
-  adminer:
-    image: adminer
-    restart: always
+  nginx:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
 
 volumes:
     db_data:  

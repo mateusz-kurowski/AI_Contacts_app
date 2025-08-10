@@ -1,10 +1,12 @@
 services:
-  nginx:
-    image: mateuszkurowski/swe-assessment-frontend:latest
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
+  db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    env_file:
+      - ./db/.env
+    volumes:
+      - db_data:/var/lib/postgresql/data
 
   migrate:
     image: mateuszkurowski/swe-assessment-backend:latest
@@ -30,20 +32,18 @@ services:
     env_file:
       - ./backend/.env
 
-  db:
-    image: postgres
-    restart: always
-    shm_size: 128mb
-    env_file:
-      - ./db/.env
-    volumes:
-      - db_data:/var/lib/postgresql/data
   adminer:
     image: adminer
     restart: always
     ports:
       - "8080:8080"
 
+  nginx:
+    image: mateuszkurowski/swe-assessment-frontend:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
 volumes:
     db_data:  
     nginx_logs:
