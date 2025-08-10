@@ -1,8 +1,9 @@
 from datetime import datetime, timezone
 from uuid import uuid4
 
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from fastapi.routing import APIRouter
+from pydantic import ValidationError
 
 from src.db.schemas import ChatResponse, NewChatMessage
 from src.services.chat_service import ChatService
@@ -17,12 +18,19 @@ def get_chat_service() -> ChatService:
 @router.post("/", response_model=ChatResponse)
 @router.post("", response_model=ChatResponse)
 def read_chat(input: NewChatMessage, svc: ChatService = Depends(get_chat_service)):
-    response = svc.get_chat_response(input.content)
-    # Return ISO string
-    current_timestamp = datetime.now(timezone.utc).isoformat()
-    return ChatResponse(
-        content=response, id=str(uuid4()), role="assistant", createdAt=current_timestamp
-    )
+    try:
+        print(input)
+        response = svc.get_chat_response(input.content)
+        # Return ISO string
+        current_timestamp = datetime.now(timezone.utc).isoformat()
+        return ChatResponse(
+            content=response,
+            id=str(uuid4()),
+            role="assistant",
+            createdAt=current_timestamp,
+        )
+    except ValidationError as e:
+        raise HTTPException(status_code=422, detail=str(e))
 
 
 @router.get("/hello", response_model=ChatResponse)

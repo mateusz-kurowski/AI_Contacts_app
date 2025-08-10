@@ -7,6 +7,23 @@ services:
       - "80:80"
     depends_on:
       - backend
+
+  migrate:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    env_file:
+      - ./backend/.env
+    command: >
+      sh -c "
+        echo 'Waiting for database...' &&
+        sleep 10 &&
+        echo 'Running migrations...' &&
+        uv run alembic upgrade head
+      "
+    restart: "no"
   backend:
     build:
       context: ./backend
