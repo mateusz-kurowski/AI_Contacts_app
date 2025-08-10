@@ -6,9 +6,8 @@ services:
     depends_on:
       - backend
 
-  backend:
+  migrate:
     image: mateuszkurowski/swe-assessment-backend:latest
-    restart: unless-stopped
     depends_on:
       - db
     env_file:
@@ -18,10 +17,18 @@ services:
         echo 'Waiting for database...' &&
         sleep 10 &&
         echo 'Running migrations...' &&
-        uv run alembic upgrade head &&
-        echo 'Starting application...' &&
-        uv run uvicorn src.main:app --workers 4 --host 0.0.0.0 --port 8000
+        uv run alembic upgrade head
       "
+    restart: "no"
+
+  backend:
+    image: mateuszkurowski/swe-assessment-backend:latest
+    restart: unless-stopped
+    depends_on:
+      - db
+      - migrate
+    env_file:
+      - ./backend/.env
 
   db:
     image: postgres
