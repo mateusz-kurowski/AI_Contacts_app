@@ -5,7 +5,7 @@ import { useChatStore } from "../../../../stores/chatStore";
 import { MessageList } from "../../../ui/message-list";
 
 const ChatHistory = () => {
-	const { isTyping, messages, addMessage } = useChatStore();
+	const { isTyping, messages, addMessage, setIsTyping } = useChatStore();
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
 	const mutation = useMutation({
 		mutationFn: getHelloMessage,
@@ -16,6 +16,7 @@ const ChatHistory = () => {
 
 		(async () => {
 			try {
+				setIsTyping(true);
 				const helloMessage = await mutation.mutateAsync();
 				addMessage({
 					...helloMessage,
@@ -30,9 +31,11 @@ const ChatHistory = () => {
 					id: "welcome-fallback",
 					role: "assistant",
 				});
+			} finally {
+				setIsTyping(false);
 			}
 		})();
-	}, [messages, mutation.mutateAsync, addMessage]);
+	}, [messages, mutation.mutateAsync, addMessage, setIsTyping]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: this is expected - scrolling is based on new message arrival
 	useEffect(() => {

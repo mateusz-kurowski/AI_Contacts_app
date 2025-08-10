@@ -17,6 +17,30 @@ interface ContactProps {
 	contact: Contact;
 }
 
+const createHash = (name: string) =>
+	name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+
+const getContactColor = (name: string) => {
+	const hash = createHash(name);
+
+	const avatarColors = [
+		"bg-blue-500 text-white dark:bg-blue-600",
+		"bg-green-500 text-white dark:bg-green-600",
+		"bg-purple-500 text-white dark:bg-purple-600",
+		"bg-pink-500 text-white dark:bg-pink-600",
+		"bg-indigo-500 text-white dark:bg-indigo-600",
+		"bg-red-500 text-white dark:bg-red-600",
+		"bg-yellow-500 text-black dark:bg-yellow-600 dark:text-white",
+		"bg-teal-500 text-white dark:bg-teal-600",
+		"bg-orange-500 text-white dark:bg-orange-600",
+		"bg-cyan-500 text-white dark:bg-cyan-600",
+		"bg-rose-500 text-white dark:bg-rose-600",
+		"bg-emerald-500 text-white dark:bg-emerald-600",
+	];
+
+	return avatarColors[hash % avatarColors.length];
+};
+
 const getInitials = (name: string) => {
 	return name
 		.split(" ")
@@ -70,32 +94,44 @@ const SideBarContactIem = ({ contact }: ContactProps) => {
 
 	return (
 		<Tooltip>
-			<TooltipTrigger>
+			<TooltipTrigger asChild>
 				<SidebarMenuItem>
-					<SidebarMenuButton asChild>
-						<span>
-							<div className="h-5 w-5 bg-gray-300 rounded-full flex items-center justify-center text-xs font-medium p-3">
+					<SidebarMenuButton
+						asChild
+						className="flex group-data-[collapsible=icon]:justify-center"
+					>
+						<span className="ml-1 flex items-center gap-3 group-data-[collapsible=icon]:ml-0">
+							<div
+								className={`h-5 w-5 rounded-full font-medium flex items-center justify-center text-xs p-3 ${getContactColor(
+									contact.name,
+								)}`}
+							>
 								{getInitials(contact.name)}
 							</div>
-							<span>
-								<div>{contact.name}</div>
-								<div>{contact.phone}</div>
+
+							<span className="flex flex-col gap-0.5 min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
+								<div className="text-sm font-medium text-foreground truncate">
+									{contact.name}
+								</div>
+								<div className="text-xs text-muted-foreground truncate">
+									{contact.phone}
+								</div>
 							</span>
 						</span>
 					</SidebarMenuButton>
-					<SidebarMenuAction>
+					<SidebarMenuAction className="group-data-[collapsible=icon]:hidden">
 						<Dialog>
 							<DialogTrigger asChild>
-								<Pen className="hover:cursor-pointer" />
+								<Pen className="hover:cursor-pointer hover:text-blue-500 h-4 w-4 mr-1" />
 							</DialogTrigger>
 							<DialogContent>
 								<ContactForm contact={contact} />
 							</DialogContent>
-							<X
-								className="hover:cursor-pointer hover:text-red-600"
-								onClick={handleDelete}
-							/>
 						</Dialog>
+						<X
+							className="hover:cursor-pointer hover:text-destructive h-4 w-4 ml-1"
+							onClick={handleDelete}
+						/>
 					</SidebarMenuAction>
 				</SidebarMenuItem>
 			</TooltipTrigger>
@@ -104,7 +140,7 @@ const SideBarContactIem = ({ contact }: ContactProps) => {
 				side="left"
 			>
 				<p>{contact.name}</p>
-				<p>{contact.phone}</p>
+				<p className="text-muted-foreground">{contact.phone}</p>
 			</TooltipContent>
 		</Tooltip>
 	);

@@ -88,7 +88,7 @@ const ContactsSideBar = () => {
 								<Tooltip>
 									<TooltipTrigger asChild>
 										<DialogTrigger asChild>
-											<SidebarMenuButton>
+											<SidebarMenuButton className="justify-center data-[collapsed=icon]:justify-center">
 												<Plus className="h-4 w-4" />
 												<span className="visible-sidebar-sr-only">
 													Add contact
