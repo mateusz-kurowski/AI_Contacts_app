@@ -45,7 +45,7 @@ def read_contact(
     svc: ContactService = Depends(get_contact_service),
 ):
     """Retrieve a specific contact by ID."""
-    db_contact = svc.get_contact(db, contact_id=contact_id)
+    db_contact = svc.get_contact_by_id(db, contact_id=contact_id)
     if db_contact is None:
         raise HTTPException(status_code=404, detail="Contact not found")
     return db_contact

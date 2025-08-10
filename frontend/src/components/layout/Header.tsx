@@ -7,7 +7,7 @@ const Header = () => {
 	const { clearMessages } = useChatStore();
 
 	return (
-		<header className="h-16 flex items-center justify-between w-full px-6 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/40 shadow-sm sticky top-0 z-50">
+		<header className="h-16 flex items-center justify-between w-full px-6 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/40 shadow-sm sticky top-0">
 			<Link
 				className="flex items-center gap-3 group transition-all duration-200 hover:scale-105"
 				to="/"

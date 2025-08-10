@@ -6,7 +6,12 @@ import ContactForm from "@/components/features/contacts/ContactForm/ContactForm"
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { getContacts } from "../../../queries/contacts";
 import { Button } from "../../ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "../../ui/dialog";
+import {
+	Dialog,
+	DialogContent,
+	DialogTitle,
+	DialogTrigger,
+} from "../../ui/dialog";
 import { Input } from "../../ui/input";
 import {
 	Sidebar,
@@ -114,6 +119,7 @@ const ContactsSideBar = () => {
 									</TooltipContent>
 								</Tooltip>
 								<DialogContent>
+									<DialogTitle>Add Contact</DialogTitle>
 									<ContactForm isInDialog />
 								</DialogContent>
 							</Dialog>

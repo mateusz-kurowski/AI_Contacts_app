@@ -10,3 +10,6 @@ class Contact(Base):
     name = Column(String(128), nullable=False)
     phone = Column(String(32), nullable=False, unique=True)
     createdAt = Column(DateTime, nullable=False, default=func.now())
+
+    def __repr__(self):
+        return f"<Contact(id={self.id}, name='{self.name}', phone='{self.phone}')>"

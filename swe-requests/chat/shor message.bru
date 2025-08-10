@@ -1,0 +1,21 @@
+meta {
+  name: shor message
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{url}}/chat
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "content":"h"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import List, Optional
 
 from sqlalchemy.orm import Session
@@ -20,6 +21,13 @@ class ContactService:
 
     def create_contact(self, db: Session, contact: ContactCreate) -> Contact:
         """Create a new contact."""
+        # Check for duplicate phone numbers
+        existing_contact = self.get_contact_by_phone(db, contact.phone)
+        if existing_contact:
+            raise ValueError(
+                f"Contact with phone number {contact.phone} already exists"
+            )
+
         db_contact = Contact(name=contact.name, phone=contact.phone)
         db.add(db_contact)
         db.commit()
@@ -29,7 +37,7 @@ class ContactService:
     def update_contact_by_id(
         self, db: Session, contact_id: int, contact: ContactUpdate
     ) -> Optional[Contact]:
-        """Update an existing contact."""
+        """Update an existing contact by ID."""
         db_contact = db.query(Contact).filter(Contact.id == contact_id).first()
         if db_contact:
             db_contact.name = contact.name
@@ -59,6 +67,15 @@ class ContactService:
             db.refresh(db_contact)
         return db_contact
 
+    def delete_contact_by_phone(self, db: Session, phone: str) -> bool:
+        """Delete a contact by phone number."""
+        db_contact = db.query(Contact).filter(Contact.phone == phone).first()
+        if db_contact:
+            db.delete(db_contact)
+            db.commit()
+            return True
+        return False
+
     def search_contacts(self, db: Session, query: str) -> List[Contact]:
         """Search contacts by name or phone number."""
         return (
@@ -75,11 +92,9 @@ class ContactService:
 
     def get_contact_stats(self, db: Session) -> dict:
         """Get contact database statistics."""
-        from datetime import datetime, timedelta
-
         total = db.query(Contact).count()
         recent_date = datetime.now() - timedelta(days=7)
-        recent = db.query(Contact).filter(Contact.createdAt >= recent_date).count()
+        recent = db.query(Contact).filter(Contact.created_at >= recent_date).count()
 
         contacts = db.query(Contact).all()
         area_codes = {}

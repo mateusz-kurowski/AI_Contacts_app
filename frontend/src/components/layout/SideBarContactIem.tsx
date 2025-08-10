@@ -5,7 +5,12 @@ import { toast } from "sonner";
 import { addContact, deleteContact } from "../../queries/contacts";
 import type { Contact } from "../../types/contact";
 import ContactForm from "../features/contacts/ContactForm/ContactForm";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import {
+	Dialog,
+	DialogContent,
+	DialogTitle,
+	DialogTrigger,
+} from "../ui/dialog";
 import {
 	SidebarMenuAction,
 	SidebarMenuButton,
@@ -51,6 +56,8 @@ const getInitials = (name: string) => {
 };
 
 const SideBarContactIem = ({ contact }: ContactProps) => {
+	const queryClient = useQueryClient();
+
 	const handleDelete = async () => {
 		await deleteContactMutation.mutateAsync(contact.id);
 	};
@@ -90,8 +97,6 @@ const SideBarContactIem = ({ contact }: ContactProps) => {
 		},
 	});
 
-	const queryClient = useQueryClient();
-
 	return (
 		<Tooltip>
 			<TooltipTrigger asChild>
@@ -119,19 +124,28 @@ const SideBarContactIem = ({ contact }: ContactProps) => {
 							</span>
 						</span>
 					</SidebarMenuButton>
-					<SidebarMenuAction className="group-data-[collapsible=icon]:hidden">
-						<Dialog>
-							<DialogTrigger asChild>
-								<Pen className="hover:cursor-pointer hover:text-blue-500 h-4 w-4 mr-1" />
-							</DialogTrigger>
-							<DialogContent>
-								<ContactForm contact={contact} />
-							</DialogContent>
-						</Dialog>
-						<X
-							className="hover:cursor-pointer hover:text-destructive h-4 w-4 ml-1"
-							onClick={handleDelete}
-						/>
+
+					<Dialog>
+						<DialogTrigger asChild>
+							<SidebarMenuAction
+								className="group-data-[collapsible=icon]:hidden mr-6"
+								showOnHover
+							>
+								<Pen className="h-3 w-3" />
+							</SidebarMenuAction>
+						</DialogTrigger>
+						<DialogContent>
+							<DialogTitle>Edit Contact</DialogTitle>
+							<ContactForm contact={contact} isInDialog />
+						</DialogContent>
+					</Dialog>
+
+					<SidebarMenuAction
+						className="group-data-[collapsible=icon]:hidden"
+						onClick={handleDelete}
+						showOnHover
+					>
+						<X className="h-3 w-3" />
 					</SidebarMenuAction>
 				</SidebarMenuItem>
 			</TooltipTrigger>

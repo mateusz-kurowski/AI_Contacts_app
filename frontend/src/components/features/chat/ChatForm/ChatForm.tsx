@@ -96,7 +96,10 @@ const ChatForm = () => {
 									</FormControl>
 									<Button
 										className="absolute bottom-3 right-3 h-8 w-8 p-0"
-										disabled={chatMutation.isPending}
+										disabled={
+											!chatForm.getValues("content").trim() ||
+											chatMutation.isPending
+										}
 										size="sm"
 										type="submit"
 									>

@@ -14,19 +14,25 @@ import {
 import { Input } from "@/components/ui/input";
 import "react-international-phone/style.css";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { PhoneNumberFormat } from "google-libphonenumber";
-import { PhoneInput } from "react-international-phone";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
-import { addContact } from "@/queries/contacts";
+import { PhoneInput } from "@/components/ui/phone-input";
+import { addContact, updateContact } from "@/queries/contacts";
 import type { Contact } from "@/types/contact";
-import { phoneUtil, validatePhoneNumber } from "./validators";
 
 export const contactFormSchema = z.object({
-	name: z.string().min(1, "Name is required"),
+	name: z
+		.string()
+		.min(1, "Name is required")
+		.min(2, "Name must be at least 2 characters")
+		.max(100, "Name must be less than 100 characters")
+		.regex(
+			/^[a-zA-Z\s'-]+$/,
+			"Name can only contain letters, spaces, hyphens and apostrophes",
+		),
 	phone: z
 		.string()
 		.min(1, "Phone number is required")
-		.refine(validatePhoneNumber, "Please enter a valid phone number"),
+		.min(5, "Phone number is too short"),
 });
 
 type ContactFormSchema = z.infer<typeof contactFormSchema>;
@@ -43,62 +49,81 @@ const ContactForm = ({ isInDialog, contact }: ContactFormProps) => {
 		name: contact?.name ?? "",
 		phone: contact?.phone ?? "",
 	};
+
+	// Determine if this is edit mode
+	const isEditing = !!contact;
+
 	const form = useForm<ContactFormSchema>({
 		defaultValues: contactFormDefaultValues,
+		mode: "onBlur",
 		resolver: contactFormResolver,
 	});
 
-	const mutation = useMutation({
+	const addMutation = useMutation({
 		mutationFn: addContact,
 		mutationKey: ["addContact"],
 	});
+
+	const editMutation = useMutation({
+		mutationFn: updateContact,
+		mutationKey: ["editContact", contact?.id],
+	});
+
 	const queryClient = useQueryClient();
+
 	const onSubmit = async (data: ContactFormSchema) => {
-		console.log("Form submitted with data:", data);
-
 		try {
-			const phoneNumber = phoneUtil.parseAndKeepRawInput(data.phone);
-			const country = phoneUtil.getRegionCodeForNumber(phoneNumber);
-			const numberType = phoneUtil.getNumberType(phoneNumber);
+			if (isEditing && contact) {
+				// Update existing contact
+				await editMutation.mutateAsync({
+					id: contact.id,
+					name: data.name.trim(),
+					phone: data.phone,
+				});
+			} else {
+				// Add new contact
+				await addMutation.mutateAsync({
+					name: data.name.trim(),
+					phone: data.phone,
+				});
+			}
 
-			// Fixed format usage
-			const internationalFormat = phoneUtil.format(
-				phoneNumber,
-				PhoneNumberFormat.INTERNATIONAL,
-			);
-			const nationalFormat = phoneUtil.format(
-				phoneNumber,
-				PhoneNumberFormat.NATIONAL,
-			);
-
-			console.log("Country:", country);
-			console.log("Number type:", numberType);
-			console.log("International format:", internationalFormat);
-			console.log("National format:", nationalFormat);
-
-			await mutation.mutateAsync({
-				name: data.name,
-				phone: internationalFormat,
-			});
 			queryClient.invalidateQueries({ queryKey: ["contacts"] });
+			form.reset();
 		} catch (error) {
-			console.log("Could not parse phone number:", error);
+			console.error(
+				`Error ${isEditing ? "updating" : "adding"} contact:`,
+				error,
+			);
+			form.setError("root", {
+				message: `Failed to ${
+					isEditing ? "update" : "add"
+				} contact. Please try again.`,
+				type: "manual",
+			});
 		}
 	};
 
+	// Determine which mutation is currently pending
+	const isPending = isEditing ? editMutation.isPending : addMutation.isPending;
+
 	return (
 		<Form {...form}>
-			<form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+			<form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
 				<FormField
 					control={form.control}
 					name="name"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel htmlFor="name">Name</FormLabel>
+							<FormLabel htmlFor="name">Full Name</FormLabel>
 							<FormControl>
-								<Input placeholder="Name" {...field} />
+								<Input
+									placeholder="Enter full name"
+									{...field}
+									className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+								/>
 							</FormControl>
-							<FormDescription>Contact name</FormDescription>
+							<FormDescription>Enter the contact's full name</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
@@ -112,35 +137,67 @@ const ContactForm = ({ isInDialog, contact }: ContactFormProps) => {
 							<FormLabel htmlFor="phone">Phone Number</FormLabel>
 							<FormControl>
 								<PhoneInput
-									defaultCountry="pl"
-									inputProps={{
-										className:
-											"flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+									countryCallingCodeEditable={true}
+									defaultCountry="PL"
+									international
+									onChange={(value) => {
+										field.onChange(value || "");
+										if (form.formState.errors.phone) {
+											form.clearErrors("phone");
+										}
 									}}
-									onChange={field.onChange}
 									placeholder="Enter phone number"
-									preferredCountries={["pl", "us", "gb", "ps"]}
 									value={field.value}
 								/>
 							</FormControl>
 							<FormDescription>
-								Enter your phone number with country code
+								Include country code (e.g., +48 for Poland)
 							</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
+
+				{form.formState.errors.root && (
+					<div className="text-sm text-destructive">
+						{form.formState.errors.root.message}
+					</div>
+				)}
+
 				{isInDialog ? (
-					<DialogFooter>
+					<DialogFooter className="gap-2">
 						<DialogClose asChild>
-							<Button className="cursor-pointer" type="submit">
-								Submit
+							<Button type="button" variant="outline">
+								Cancel
 							</Button>
 						</DialogClose>
+						<Button
+							className="transition-all duration-200"
+							disabled={isPending}
+							type="submit"
+						>
+							{isPending
+								? isEditing
+									? "Updating..."
+									: "Adding..."
+								: isEditing
+									? "Update Contact"
+									: "Add Contact"}
+						</Button>
 					</DialogFooter>
 				) : (
-					<Button className="cursor-pointer" type="submit">
-						Submit
+					<Button
+						className="w-full transition-all duration-200"
+						disabled={isPending}
+						type="submit"
+					>
+						{isPending
+							? isEditing
+								? "Updating Contact..."
+								: "Adding Contact..."
+							: isEditing
+								? "Update Contact"
+								: "Add Contact"}
 					</Button>
 				)}
 			</form>

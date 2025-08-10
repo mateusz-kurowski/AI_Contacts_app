@@ -5,10 +5,9 @@ from src.db.schemas import ContactCreate, ContactUpdate
 from src.services.contact_service import get_contact_service
 
 
-# Create wrapper functions that handle db internally
 def create_contact_tool(name: str, phone: str) -> str:
     """Create a new contact with the given name and phone number."""
-    db = next(get_db())  # Get a database session
+    db = next(get_db())
     try:
         service = get_contact_service()
         contact_data = ContactCreate(name=name, phone=phone)
@@ -18,12 +17,12 @@ def create_contact_tool(name: str, phone: str) -> str:
         db.close()
 
 
-def get_contacts_tool(skip: int = 0, limit: int = 10) -> str:
-    """Get all contacts with pagination."""
+def get_contacts_tool() -> str:
+    """Get all contacts."""
     db = next(get_db())
     try:
         service = get_contact_service()
-        contacts = service.get_contacts(db, skip, limit)
+        contacts = service.get_contacts(db)
         if not contacts:
             return "No contacts found."
         contact_list = [f"{c.name}: {c.phone}" for c in contacts]
@@ -32,26 +31,12 @@ def get_contacts_tool(skip: int = 0, limit: int = 10) -> str:
         db.close()
 
 
-def update_contact_by_id_tool(contact_id: int, name: str, phone: str) -> str:
-    """Update an existing contact by ID."""
-    db = next(get_db())
-    try:
-        service = get_contact_service()
-        contact_data = ContactUpdate(name=name, phone=phone)
-        result = service.update_contact_by_id(db, contact_id, contact_data)
-        if result:
-            return f"Contact updated successfully: {result.name} - {result.phone}"
-        else:
-            return "Contact not found."
-    finally:
-        db.close()
-
-def update_contact_by_phone_num_tool(name: str, phone: str) -> str:
+def update_contact_by_phone_num_tool(phone: str, name: str, new_phone: str) -> str:
     """Update an existing contact by phone number."""
     db = next(get_db())
     try:
         service = get_contact_service()
-        contact_data = ContactUpdate(name=name, phone=phone)
+        contact_data = ContactUpdate(name=name, phone=new_phone)
         result = service.update_contact_by_phone_num(db, phone, contact_data)
         if result:
             return f"Contact updated successfully: {result.name} - {result.phone}"
@@ -60,12 +45,13 @@ def update_contact_by_phone_num_tool(name: str, phone: str) -> str:
     finally:
         db.close()
 
-def delete_contact_tool(contact_id: int) -> str:
-    """Delete a contact by ID."""
+
+def delete_contact_by_number_tool(phone: str) -> str:
+    """Delete a contact by phone number."""
     db = next(get_db())
     try:
         service = get_contact_service()
-        success = service.delete_contact(db, contact_id)
+        success = service.delete_contact_by_phone(db, phone)
         return "Contact deleted successfully." if success else "Contact not found."
     finally:
         db.close()
@@ -100,17 +86,6 @@ def get_contact_by_id_tool(contact_id: int) -> str:
         db.close()
 
 
-def get_contact_statistics_tool() -> str:
-    """Get statistics about the contact database."""
-    db = next(get_db())
-    try:
-        service = get_contact_service()
-        stats = service.get_contact_stats(db)
-        return f"Contact Statistics:\nTotal contacts: {stats['total']}\nRecent additions (last 7 days): {stats['recent']}\nMost common area codes: {', '.join(stats['area_codes'])}"
-    finally:
-        db.close()
-
-
 system_instruction = """You are a helpful AI contact book assistant for managing personal and business contacts efficiently.
 
 **Important:** If this appears to be the start of a conversation (no previous context about contacts), automatically provide a welcome message using the welcome message tool to introduce yourself and explain your capabilities.
@@ -118,12 +93,12 @@ system_instruction = """You are a helpful AI contact book assistant for managing
 **Your capabilities:**
 - Provide welcome messages and guidance to new users
 - Create new contacts with name and phone number
-- Retrieve all contacts with pagination support
+- Retrieve all contacts
+- List some of the contacts
 - Update existing contact information
-- Delete contacts by ID
+- Delete contacts by phone number
 - Search contacts by name or phone number
 - Get detailed information about specific contacts
-- Provide contact database statistics
 
 **Special Instructions:**
 - When a user first starts chatting or asks for help, use the welcome message tool
@@ -142,7 +117,7 @@ system_instruction = """You are a helpful AI contact book assistant for managing
 
 class AppConfig(BaseModel):
     model_client: GenerateContentConfig
-    model_id: str = "gemini-2.5-flash"
+    model_id: str = "gemini-2.0-flash"
 
 
 app_config: AppConfig = AppConfig(
@@ -151,12 +126,10 @@ app_config: AppConfig = AppConfig(
         tools=[
             create_contact_tool,
             get_contacts_tool,
-            update_contact_by_id_tool,
             update_contact_by_phone_num_tool,
-            delete_contact_tool,
+            delete_contact_by_number_tool,
             search_contacts_tool,
             get_contact_by_id_tool,
-            get_contact_statistics_tool,
         ],
     )
 )
