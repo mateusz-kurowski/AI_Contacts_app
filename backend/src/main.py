@@ -1,11 +1,12 @@
 # src/main.py
 from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
 
-from src.db.db import create_tables, get_db
+from src.api.chat import router as chat_router
+from src.api.contacts import router as contacts_router
+from src.db.db import create_tables
 
 
 @asynccontextmanager
@@ -14,7 +15,7 @@ async def lifespan(app: FastAPI):
     create_tables()
     yield
 
-app = FastAPI(title="Contacts API", lifespan=lifespan)
+app = FastAPI(title="Contacts API", lifespan=lifespan, prefix="/api")
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,6 +25,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(contacts_router)
+app.include_router(chat_router)
+
+
 @app.get("/")
 def read_root():
     return {"message": "Contacts API is running"}
@@ -32,8 +37,3 @@ def read_root():
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
-
-
-@app.get("/contacts")
-def get_contacts(db: Session = Depends(get_db)):
-    return {"contacts": []}

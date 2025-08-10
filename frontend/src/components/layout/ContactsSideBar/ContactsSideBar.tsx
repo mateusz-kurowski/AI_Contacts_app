@@ -89,7 +89,7 @@ const ContactsSideBar = () => {
 								</DialogContent>
 							</Dialog>
 						</SidebarMenuItem>
-						{data.contacts.map((contact) => (
+						{data.map((contact) => (
 							<SideBarContactIem contact={contact} key={contact.id} />
 						))}
 					</SidebarMenu>
