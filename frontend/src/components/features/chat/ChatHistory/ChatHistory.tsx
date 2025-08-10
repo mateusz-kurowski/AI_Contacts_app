@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { getHelloMessage } from "@/queries/chat";
 import { useChatStore } from "../../../../stores/chatStore";
@@ -7,51 +7,46 @@ import { MessageList } from "../../../ui/message-list";
 const ChatHistory = () => {
 	const { isTyping, messages, addMessage, setIsTyping } = useChatStore();
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
-	const mutation = useMutation({
-		mutationFn: getHelloMessage,
+
+	const {
+		data: helloMessage,
+		error,
+		isLoading,
+	} = useQuery({
+		enabled: messages.length === 0, // Only fetch when no messages exist
+		queryFn: getHelloMessage,
+		queryKey: ["helloMessage"],
+		retry: 1,
 	});
 
 	useEffect(() => {
-		if (messages.length) return;
+		setIsTyping(isLoading);
+	}, [isLoading, setIsTyping]);
 
-		let cancelled = false;
+	useEffect(() => {
+		if (helloMessage && messages.length === 0) {
+			addMessage({
+				...helloMessage,
+				createdAt: new Date(helloMessage.createdAt),
+			});
+		}
+	}, [helloMessage, messages.length, addMessage]);
 
-		(async () => {
-			if (cancelled) return;
+	useEffect(() => {
+		if (error && messages.length === 0) {
+			console.error("Failed to get hello message:", error);
+			addMessage({
+				content:
+					"Hello! I'm your AI Contacts assistant. How can I help you today?",
+				createdAt: new Date(),
+				id: "welcome-fallback",
+				role: "assistant",
+			});
+		}
+	}, [error, messages.length, addMessage]);
 
-			try {
-				setIsTyping(true);
-				const helloMessage = await mutation.mutateAsync();
-				if (!cancelled) {
-					addMessage({
-						...helloMessage,
-						createdAt: new Date(helloMessage.createdAt),
-					});
-				}
-			} catch (error) {
-				if (!cancelled) {
-					console.error("Failed to get hello message:", error);
-					addMessage({
-						content:
-							"Hello! I'm your AI Contacts assistant. How can I help you today?",
-						createdAt: new Date(),
-						id: "welcome-fallback",
-						role: "assistant",
-					});
-				}
-			} finally {
-				if (!cancelled) {
-					setIsTyping(false);
-				}
-			}
-		})();
-
-		return () => {
-			cancelled = true;
-		};
-	}, [messages.length, mutation.mutateAsync, addMessage, setIsTyping]);
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: this is expected - scrolling is based on new message arrival
+	// Auto-scroll effect
+	// biome-ignore lint/correctness/useExhaustiveDependencies: scrolling is based on new message arrival
 	useEffect(() => {
 		if (scrollContainerRef.current) {
 			scrollContainerRef.current.scrollTo({
