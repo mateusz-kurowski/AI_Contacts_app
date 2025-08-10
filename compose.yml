@@ -1,18 +1,15 @@
 services:
-  caddy:
-    image: caddy:2.8.4
-    restart: unless-stopped
-    cap_add:
-      - NET_ADMIN
+  nginx:
+    image: nginx:alpine
     ports:
       - "80:80"
-      - "443:443"
-      - "443:443/udp"
     volumes:
-      - $PWD/conf:/etc/caddy
-      - $PWD/site:/srv
-      - caddy_data:/data
-      - caddy_config:/config
+      - $PWD/conf/nginx.conf:/etc/nginx/nginx.conf
+      - $PWD/site:/usr/share/nginx/html
+    depends_on:
+      - backend
+    networks:
+      - app-network
 
   backend:
     build: ./backend
@@ -39,5 +36,4 @@ services:
 
 volumes:
     db_data:  
-    caddy_data:
-    caddy_config:
+    nginx_logs:
