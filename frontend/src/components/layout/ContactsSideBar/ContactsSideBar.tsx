@@ -23,8 +23,8 @@ import { Tooltip, TooltipTrigger } from "../../ui/tooltip";
 import SideBarContactIem from "../SideBarContactIem";
 
 const ContactsSideBar = () => {
-	const { toggleSidebar, open } = useSidebar();
 	const [searchText, setSearchText] = useState("");
+	const { toggleSidebar, open, isMobile } = useSidebar();
 
 	const { data, error, isLoading } = useQuery({
 		queryFn: getContacts,
@@ -42,12 +42,17 @@ const ContactsSideBar = () => {
 		);
 	}, [data, searchText]);
 
-	if (isLoading) return <p>Loading...</p>;
+	if (isLoading) return;
 	if (error) return <p>Error: {error.message}</p>;
 	if (!data) return <p>No data found</p>;
 
 	return (
-		<Sidebar collapsible="icon" side="right" variant="sidebar">
+		<Sidebar
+			collapsible="icon"
+			key={`sidebar-${isMobile}`}
+			side="right"
+			variant="sidebar"
+		>
 			<SidebarContent className="flex-1 min-h-0 overflow-y-auto">
 				<Tooltip>
 					<TooltipTrigger asChild>
