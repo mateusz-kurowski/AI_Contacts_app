@@ -55,6 +55,7 @@ const ChatForm = () => {
 			const response = await chatMutation.mutateAsync(data);
 			addMessage({ ...response, createdAt: new Date(response.createdAt) });
 			queryClient.invalidateQueries({ queryKey: ["contacts"] });
+			setIsTyping(false);
 		} catch {
 			setIsTyping(false);
 			toast.error("Error sending message", {

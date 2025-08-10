@@ -3,7 +3,7 @@ import { useChatStore } from "../../../../stores/chatStore";
 import { MessageList } from "../../../ui/message-list";
 
 const ChatHistory = () => {
-	const { messages } = useChatStore();
+	const { isTyping, messages } = useChatStore();
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: this is expected - scrolling is based on new message arrival
@@ -18,7 +18,7 @@ const ChatHistory = () => {
 
 	return (
 		<div className="w-full h-full overflow-y-auto p-2" ref={scrollContainerRef}>
-			<MessageList messages={messages} />
+			<MessageList isTyping={isTyping} messages={messages} />
 		</div>
 	);
 };
