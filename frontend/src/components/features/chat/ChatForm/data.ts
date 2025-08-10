@@ -7,6 +7,9 @@ export interface ChatFormData {
 export const chatFormSchema = z.object({
 	content: z
 		.string()
-		.min(2, "Input is too short.")
-		.max(400, "Tokens are limited. Please shorten your message."),
+		.min(2, "Please enter at least 2 characters to send a message.")
+		.max(
+			400,
+			"Message too long! Please keep it under 400 characters. Tokens are not cheap.",
+		),
 });

@@ -161,9 +161,9 @@
 	}
 
 	/* Visibility variants */
-			.tooltip-collapsed-only {
-			@apply group-data-[collapsible=icon]:block hidden;
-		}
+	.tooltip-collapsed-only {
+		@apply group-data-[collapsible=icon]:block hidden;
+	}
 
 	.tooltip-expanded-only {
 		@apply group-data-[collapsible=icon]:hidden;

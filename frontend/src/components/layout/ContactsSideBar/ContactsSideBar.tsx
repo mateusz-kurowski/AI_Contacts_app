@@ -60,7 +60,10 @@ const ContactsSideBar = () => {
 							<ArrowLeft className="tooltip-collapsed-only h-4 w-4" />
 							<ArrowRight className="tooltip-expanded-only h-4 w-4" />
 							<span className="visible-sidebar-sr-only text-sm">
-								Hide sidebar
+								<span>Hide sidebar </span>
+								<kbd className="px-1.5 py-0.5 text-xs font-mono bg-muted border border-border rounded">
+									Ctrl+B
+								</kbd>
 							</span>
 						</Button>
 					</TooltipTrigger>
@@ -68,7 +71,9 @@ const ContactsSideBar = () => {
 						className="tooltip-custom tooltip-collapsed-only"
 						side="left"
 					>
-						Expand sidebar
+						<div className="flex items-center gap-2">
+							<span>Expand sidebar</span>
+						</div>
 					</TooltipContent>
 				</Tooltip>
 

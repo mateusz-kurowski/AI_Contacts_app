@@ -13,7 +13,7 @@ import {
 	FormControl,
 	FormField,
 	FormItem,
-	FormLabel,
+	FormMessage,
 } from "../../../ui/form";
 import { Textarea } from "../../../ui/textarea";
 import { type ChatFormData, chatFormSchema } from "./data";
@@ -24,7 +24,9 @@ const ChatForm = () => {
 		defaultValues: {
 			content: "",
 		},
+		mode: "onSubmit",
 		resolver: zodResolver(chatFormSchema),
+		reValidateMode: "onBlur",
 	});
 	const { addMessage, setIsTyping } = useChatStore();
 
@@ -67,8 +69,15 @@ const ChatForm = () => {
 		}
 	};
 
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+		if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+			e.preventDefault();
+			chatForm.handleSubmit(handleSubmit)();
+		}
+	};
+
 	return (
-		<div className="w-full max-w-2xl mx-auto">
+		<div className="w-full max-w-2xl mx-auto overflow-hidden">
 			<Form {...chatForm}>
 				<form onSubmit={chatForm.handleSubmit(handleSubmit)}>
 					<FormField
@@ -76,25 +85,25 @@ const ChatForm = () => {
 						name="content"
 						render={({ field }) => (
 							<FormItem>
-								<div className="relative">
+								<div className="relative w-full overflow-hidden">
 									<FormControl>
 										<Textarea
 											{...field}
-											className="w-full max-w-full min-h-[60px] max-h-[120px] resize-none pr-12 py-4 text-base border-2 focus:border-primary/50 transition-colors overflow-y-auto"
-											placeholder="Ask anything..."
-											rows={3}
-											style={{ resize: "none" }}
+											className="w-full min-h-[60px] max-h-[120px] resize-none break-words pr-12 py-4 text-base border-2 focus:border-primary/50 transition-colors overflow-y-auto"
+											onKeyDown={handleKeyDown}
+											placeholder="Ask anything... (Ctrl+Enter to send)"
 										/>
 									</FormControl>
 									<Button
 										className="absolute bottom-3 right-3 h-8 w-8 p-0"
+										disabled={chatMutation.isPending}
 										size="sm"
 										type="submit"
 									>
 										<Send className="h-4 w-4" />
 									</Button>
 								</div>
-								<FormLabel>Chat history is not stored on the server.</FormLabel>
+								<FormMessage />
 							</FormItem>
 						)}
 					/>
