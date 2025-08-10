@@ -1,6 +1,7 @@
 import { TooltipContent } from "@radix-ui/react-tooltip";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight, Plus } from "lucide-react";
+import { useMemo, useState } from "react";
 import ContactForm from "@/components/features/contacts/ContactForm/ContactForm";
 import { getContacts } from "../../../queries/contacts";
 import { Button } from "../../ui/button";
@@ -21,11 +22,23 @@ import SideBarContactIem from "../SideBarContactIem";
 
 const ContactsSideBar = () => {
 	const { toggleSidebar, open } = useSidebar();
+	const [searchText, setSearchText] = useState("");
 
 	const { data, error, isLoading } = useQuery({
 		queryFn: getContacts,
 		queryKey: ["contacts"],
 	});
+
+	// Filter contacts based on search text
+	const filteredContacts = useMemo(() => {
+		if (!data || !searchText.trim()) return data || [];
+
+		return data.filter(
+			(contact) =>
+				contact.name?.toLowerCase().includes(searchText.toLowerCase()) ||
+				contact.phone?.includes(searchText),
+		);
+	}, [data, searchText]);
 
 	if (isLoading) return <p>Loading...</p>;
 	if (error) return <p>Error: {error.message}</p>;
@@ -59,7 +72,11 @@ const ContactsSideBar = () => {
 
 				<SidebarHeader className="visible-sidebar-sr-only">
 					<h2>Contacts</h2>
-					<Input placeholder="Find contact" />
+					<Input
+						onChange={(e) => setSearchText(e.target.value)}
+						placeholder="Find contact"
+						value={searchText}
+					/>
 				</SidebarHeader>
 
 				<SidebarGroup>
@@ -89,7 +106,7 @@ const ContactsSideBar = () => {
 								</DialogContent>
 							</Dialog>
 						</SidebarMenuItem>
-						{data.map((contact) => (
+						{filteredContacts.map((contact) => (
 							<SideBarContactIem contact={contact} key={contact.id} />
 						))}
 					</SidebarMenu>
