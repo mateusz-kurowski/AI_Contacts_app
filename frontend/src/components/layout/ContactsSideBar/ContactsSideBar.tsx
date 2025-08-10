@@ -85,7 +85,7 @@ const ContactsSideBar = () => {
 									</TooltipContent>
 								</Tooltip>
 								<DialogContent>
-									<ContactForm />
+									<ContactForm isInDialog />
 								</DialogContent>
 							</Dialog>
 						</SidebarMenuItem>

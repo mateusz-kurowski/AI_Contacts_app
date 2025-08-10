@@ -16,6 +16,7 @@ import "react-international-phone/style.css";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PhoneNumberFormat } from "google-libphonenumber";
 import { PhoneInput } from "react-international-phone";
+import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { addContact } from "@/queries/contacts";
 import { phoneUtil, validatePhoneNumber } from "./validators";
 
@@ -36,7 +37,11 @@ const contactFormDefaultValues: ContactFormSchema = {
 
 const contactFormResolver = zodResolver(contactFormSchema);
 
-const ContactForm = () => {
+interface ContactFormProps {
+	isInDialog?: boolean;
+}
+
+const ContactForm = ({ isInDialog }: ContactFormProps) => {
 	const form = useForm<ContactFormSchema>({
 		defaultValues: contactFormDefaultValues,
 		resolver: contactFormResolver,
@@ -124,8 +129,15 @@ const ContactForm = () => {
 						</FormItem>
 					)}
 				/>
-
-				<Button type="submit">Submit</Button>
+				{isInDialog ? (
+					<DialogFooter>
+						<DialogClose asChild>
+							<Button type="submit">Submit</Button>
+						</DialogClose>
+					</DialogFooter>
+				) : (
+					<Button type="submit">Submit</Button>
+				)}
 			</form>
 		</Form>
 	);
