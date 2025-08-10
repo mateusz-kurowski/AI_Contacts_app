@@ -6,10 +6,6 @@ from src.db.schemas import ContactCreate, ContactUpdate
 
 
 class ContactService:
-    def get_contact(self, db: Session, contact_id: int) -> Optional[Contact]:
-        """Get a single contact by ID."""
-        return db.query(Contact).filter(Contact.id == contact_id).first()
-
     def get_contacts(
         self, db: Session, skip: int = 0, limit: int = 100
     ) -> List[Contact]:
@@ -30,7 +26,7 @@ class ContactService:
         db.refresh(db_contact)
         return db_contact
 
-    def update_contact(
+    def update_contact_by_id(
         self, db: Session, contact_id: int, contact: ContactUpdate
     ) -> Optional[Contact]:
         """Update an existing contact."""
@@ -50,6 +46,56 @@ class ContactService:
             db.commit()
             return True
         return False
+
+    def update_contact_by_phone_num(
+        self, db: Session, phone: str, contact: ContactUpdate
+    ) -> Optional[Contact]:
+        """Update a contact by phone number."""
+        db_contact = db.query(Contact).filter(Contact.phone == phone).first()
+        if db_contact:
+            db_contact.name = contact.name
+            db_contact.phone = contact.phone
+            db.commit()
+            db.refresh(db_contact)
+        return db_contact
+
+    def search_contacts(self, db: Session, query: str) -> List[Contact]:
+        """Search contacts by name or phone number."""
+        return (
+            db.query(Contact)
+            .filter(
+                Contact.name.ilike(f"%{query}%") | Contact.phone.ilike(f"%{query}%")
+            )
+            .all()
+        )
+
+    def get_contact_by_id(self, db: Session, contact_id: int) -> Optional[Contact]:
+        """Get detailed information about a specific contact by ID."""
+        return db.query(Contact).filter(Contact.id == contact_id).first()
+
+    def get_contact_stats(self, db: Session) -> dict:
+        """Get contact database statistics."""
+        from datetime import datetime, timedelta
+
+        total = db.query(Contact).count()
+        recent_date = datetime.now() - timedelta(days=7)
+        recent = db.query(Contact).filter(Contact.createdAt >= recent_date).count()
+
+        contacts = db.query(Contact).all()
+        area_codes = {}
+        for contact in contacts:
+            digits = "".join(filter(str.isdigit, contact.phone))
+            if len(digits) >= 3:
+                area_code = digits[:3]
+                area_codes[area_code] = area_codes.get(area_code, 0) + 1
+
+        most_common = sorted(area_codes.items(), key=lambda x: x[1], reverse=True)[:3]
+
+        return {
+            "total": total,
+            "recent": recent,
+            "area_codes": [code for code, _ in most_common],
+        }
 
 
 def get_contact_service() -> ContactService:

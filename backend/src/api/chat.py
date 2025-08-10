@@ -23,3 +23,13 @@ def read_chat(input: NewChatMessage, svc: ChatService = Depends(get_chat_service
     return ChatResponse(
         content=response, id=str(uuid4()), role="assistant", createdAt=current_timestamp
     )
+
+
+@router.get("/hello", response_model=ChatResponse)
+@router.get("hello", response_model=ChatResponse)
+def get_hello_message(svc: ChatService = Depends(get_chat_service)):
+    response = svc.get_chat_response("Hello!")
+    current_timestamp = datetime.now(timezone.utc).isoformat()
+    return ChatResponse(
+        content=response, id=str(uuid4()), role="assistant", createdAt=current_timestamp
+    )

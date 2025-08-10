@@ -64,7 +64,7 @@ def update_contact(
     if db_contact_by_phone and db_contact_by_phone.id != contact_id:
         raise HTTPException(status_code=400, detail="Phone number already registered")
 
-    db_contact = svc.update_contact(db, contact_id=contact_id, contact=contact)
+    db_contact = svc.update_contact_by_id(db, contact_id=contact_id, contact=contact)
     if db_contact is None:
         raise HTTPException(status_code=404, detail="Contact not found")
     return db_contact
