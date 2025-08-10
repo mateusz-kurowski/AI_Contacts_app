@@ -3,8 +3,6 @@ services:
     image: mateuszkurowski/swe-assessment-frontend:latest
     ports:
       - "80:80"
-    volumes:
-      - $PWD/frontend/conf/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - backend
 
