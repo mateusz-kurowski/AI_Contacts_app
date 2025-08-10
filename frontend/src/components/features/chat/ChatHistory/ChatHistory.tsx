@@ -5,7 +5,7 @@ const ChatHistory = () => {
 	const { messages } = useChatStore();
 
 	return (
-		<div className="w-full overflow-y-auto">
+		<div className="w-full h-full overflow-y-auto p-2">
 			<MessageList messages={messages} />
 		</div>
 	);

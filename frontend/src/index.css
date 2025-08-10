@@ -80,6 +80,7 @@
 	--tooltip-bg: oklch(0.205 0 0);
 	--tooltip-text: oklch(0.985 0 0);
 	--tooltip-border: oklch(0.269 0 0);
+	--header-height: 4rem; /* py-4 (1rem) * 2 + content height */
 }
 
 .dark {
