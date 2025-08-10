@@ -6,16 +6,17 @@ import { Button } from "../ui/button";
 const Header = () => {
 	const { clearMessages } = useChatStore();
 	return (
-		<header className="h-16 flex items-center justify-between w-full px-6 bg-white border-b border-gray-200 shadow-sm ">
+		<header className="h-16 flex items-center justify-between w-full px-6 bg-background border-b border-border shadow-sm">
 			<Link to="/">
 				<div className="flex items-center gap-3">
-					<BookUser className="h-6 w-6 text-blue-600" />
-					<h1 className="text-xl font-semibold text-gray-900">Contacts</h1>
+					<BookUser className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+					<h1 className="text-xl font-semibold text-foreground">AI Contacts</h1>
 				</div>
 			</Link>
 			<Button
-				className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors"
+				className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
 				onClick={clearMessages}
+				size="icon"
 				title="Clear chat history"
 				variant="outline"
 			>

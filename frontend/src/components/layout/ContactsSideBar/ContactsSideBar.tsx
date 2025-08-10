@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 import ContactForm from "@/components/features/contacts/ContactForm/ContactForm";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 import { getContacts } from "../../../queries/contacts";
 import { Button } from "../../ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "../../ui/dialog";
@@ -10,6 +11,7 @@ import { Input } from "../../ui/input";
 import {
 	Sidebar,
 	SidebarContent,
+	SidebarFooter,
 	SidebarGroup,
 	SidebarHeader,
 	SidebarMenu,
@@ -112,6 +114,9 @@ const ContactsSideBar = () => {
 					</SidebarMenu>
 				</SidebarGroup>
 			</SidebarContent>
+			<SidebarFooter>
+				<ModeToggle />
+			</SidebarFooter>
 		</Sidebar>
 	);
 };
