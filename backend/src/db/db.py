@@ -1,7 +1,7 @@
 import os
 import time
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -27,7 +27,7 @@ def wait_for_db(max_retries=30, delay=2):
     for attempt in range(max_retries):
         try:
             with engine.connect() as connection:
-                connection.execute("SELECT 1")
+                connection.execute(text("SELECT 1"))
                 print("Database connection established!")
                 return True
         except OperationalError as e:
@@ -43,6 +43,7 @@ def create_tables():
     """Create all tables in the database"""
     try:
         wait_for_db()
+
         Base.metadata.create_all(bind=engine)
         print("Database tables created successfully!")
     except Exception as e:
