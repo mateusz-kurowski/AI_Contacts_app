@@ -15,7 +15,14 @@ async def lifespan(app: FastAPI):
     print("Shutting down...")
 
 
-app = FastAPI(title="Contacts API", lifespan=lifespan, prefix="/api")
+app = FastAPI(
+    title="Contacts API",
+    lifespan=lifespan,
+    prefix="/api",
+    docs_url="/docs",
+    redoc_url="/redoc",
+)
+app.openapi_version = "3.0.2"
 
 app.add_middleware(
     CORSMiddleware,
