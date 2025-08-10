@@ -18,3 +18,17 @@ export const sendMessage = async (
 
 	return response.json();
 };
+
+export const getHelloMessage = async (): Promise<ChatResponse> => {
+	const response = await fetch(`${import.meta.env.VITE_API_URL}/chat/hello`, {
+		headers: {
+			"Content-Type": "application/json",
+		},
+	});
+
+	if (!response.ok) {
+		throw new Error(`HTTP error! status: ${response.status}`);
+	}
+
+	return response.json();
+};

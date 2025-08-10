@@ -18,6 +18,7 @@ import { PhoneNumberFormat } from "google-libphonenumber";
 import { PhoneInput } from "react-international-phone";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { addContact } from "@/queries/contacts";
+import type { Contact } from "@/types/contact";
 import { phoneUtil, validatePhoneNumber } from "./validators";
 
 export const contactFormSchema = z.object({
@@ -30,18 +31,18 @@ export const contactFormSchema = z.object({
 
 type ContactFormSchema = z.infer<typeof contactFormSchema>;
 
-const contactFormDefaultValues: ContactFormSchema = {
-	name: "",
-	phone: "",
-};
-
 const contactFormResolver = zodResolver(contactFormSchema);
 
 interface ContactFormProps {
 	isInDialog?: boolean;
+	contact?: Contact;
 }
 
-const ContactForm = ({ isInDialog }: ContactFormProps) => {
+const ContactForm = ({ isInDialog, contact }: ContactFormProps) => {
+	const contactFormDefaultValues: ContactFormSchema = {
+		name: contact?.name ?? "",
+		phone: contact?.phone ?? "",
+	};
 	const form = useForm<ContactFormSchema>({
 		defaultValues: contactFormDefaultValues,
 		resolver: contactFormResolver,
@@ -132,11 +133,15 @@ const ContactForm = ({ isInDialog }: ContactFormProps) => {
 				{isInDialog ? (
 					<DialogFooter>
 						<DialogClose asChild>
-							<Button type="submit">Submit</Button>
+							<Button className="cursor-pointer" type="submit">
+								Submit
+							</Button>
 						</DialogClose>
 					</DialogFooter>
 				) : (
-					<Button type="submit">Submit</Button>
+					<Button className="cursor-pointer" type="submit">
+						Submit
+					</Button>
 				)}
 			</form>
 		</Form>

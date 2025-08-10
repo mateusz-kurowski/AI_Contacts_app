@@ -25,6 +25,25 @@ export const addContact = async (
 	return response.json();
 };
 
+export const updateContact = async (contact: Contact): Promise<Contact> => {
+	const { id, ...newContactBody } = contact;
+	const response = await fetch(
+		`${import.meta.env.VITE_API_URL}/contacts/${id}`,
+		{
+			body: JSON.stringify(newContactBody),
+			headers: {
+				"Content-Type": "application/json",
+			},
+			method: "PUT",
+		},
+	);
+	if (!response.ok) {
+		console.log("Error updating contact:", response.statusText);
+		throw new Error("Failed to update contact");
+	}
+	return response.json();
+};
+
 export const deleteContact = async (id: number) => {
 	const response = await fetch(
 		`${import.meta.env.VITE_API_URL}/contacts/${id}`,

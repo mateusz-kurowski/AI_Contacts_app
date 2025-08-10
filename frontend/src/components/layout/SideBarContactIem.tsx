@@ -4,6 +4,8 @@ import { Pen, X } from "lucide-react";
 import { toast } from "sonner";
 import { addContact, deleteContact } from "../../queries/contacts";
 import type { Contact } from "../../types/contact";
+import ContactForm from "../features/contacts/ContactForm/ContactForm";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import {
 	SidebarMenuAction,
 	SidebarMenuButton,
@@ -82,11 +84,18 @@ const SideBarContactIem = ({ contact }: ContactProps) => {
 						</span>
 					</SidebarMenuButton>
 					<SidebarMenuAction>
-						<Pen className="hover:cursor-pointer" />
-						<X
-							className="hover:cursor-pointer hover:text-red-600"
-							onClick={handleDelete}
-						/>
+						<Dialog>
+							<DialogTrigger asChild>
+								<Pen className="hover:cursor-pointer" />
+							</DialogTrigger>
+							<DialogContent>
+								<ContactForm contact={contact} />
+							</DialogContent>
+							<X
+								className="hover:cursor-pointer hover:text-red-600"
+								onClick={handleDelete}
+							/>
+						</Dialog>
 					</SidebarMenuAction>
 				</SidebarMenuItem>
 			</TooltipTrigger>
