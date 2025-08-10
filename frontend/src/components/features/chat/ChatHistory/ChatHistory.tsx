@@ -14,28 +14,42 @@ const ChatHistory = () => {
 	useEffect(() => {
 		if (messages.length) return;
 
+		let cancelled = false;
+
 		(async () => {
+			if (cancelled) return;
+
 			try {
 				setIsTyping(true);
 				const helloMessage = await mutation.mutateAsync();
-				addMessage({
-					...helloMessage,
-					createdAt: new Date(helloMessage.createdAt),
-				});
+				if (!cancelled) {
+					addMessage({
+						...helloMessage,
+						createdAt: new Date(helloMessage.createdAt),
+					});
+				}
 			} catch (error) {
-				console.error("Failed to get hello message:", error);
-				addMessage({
-					content:
-						"Hello! I'm your AI Contacts assistant. How can I help you today?",
-					createdAt: new Date(),
-					id: "welcome-fallback",
-					role: "assistant",
-				});
+				if (!cancelled) {
+					console.error("Failed to get hello message:", error);
+					addMessage({
+						content:
+							"Hello! I'm your AI Contacts assistant. How can I help you today?",
+						createdAt: new Date(),
+						id: "welcome-fallback",
+						role: "assistant",
+					});
+				}
 			} finally {
-				setIsTyping(false);
+				if (!cancelled) {
+					setIsTyping(false);
+				}
 			}
 		})();
-	}, [messages, mutation.mutateAsync, addMessage, setIsTyping]);
+
+		return () => {
+			cancelled = true;
+		};
+	}, [messages.length, mutation.mutateAsync, addMessage, setIsTyping]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: this is expected - scrolling is based on new message arrival
 	useEffect(() => {
