@@ -13,6 +13,15 @@ services:
       - db
     env_file:
       - ./backend/.env
+    command: >
+      sh -c "
+        echo 'Waiting for database...' &&
+        sleep 10 &&
+        echo 'Running migrations...' &&
+        uv run alembic upgrade head &&
+        echo 'Starting application...' &&
+        uv run uvicorn src.main:app --workers 4 --host 0.0.0.0 --port 8000
+      "
 
   db:
     image: postgres

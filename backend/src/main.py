@@ -1,6 +1,8 @@
 # src/main.py
 from contextlib import asynccontextmanager
 
+import alembic.command
+import alembic.config
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -12,7 +14,17 @@ from src.db.db import create_tables
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Starting up...")
-    create_tables()
+
+    # Run alembic migrations
+    try:
+        alembic_cfg = alembic.config.Config("alembic.ini")
+        alembic.command.upgrade(alembic_cfg, "head")
+        print("Database migrations applied successfully!")
+    except Exception as e:
+        print(f"Migration error: {e}")
+        # Fallback to create_tables for development
+        create_tables()
+
     yield
 
 app = FastAPI(title="Contacts API", lifespan=lifespan, prefix="/api")
