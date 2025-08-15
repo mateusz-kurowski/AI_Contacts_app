@@ -2,58 +2,26 @@ import { TooltipContent, TooltipTrigger } from "@radix-ui/react-tooltip";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Pen, X } from "lucide-react";
 import { toast } from "sonner";
-import { addContact, deleteContact } from "../../queries/contacts";
-import type { Contact } from "../../types/contact";
-import ContactForm from "../features/contacts/ContactForm/ContactForm";
+import { addContact, deleteContact } from "../../../queries/contacts";
+import type { Contact } from "../../../types/contact";
+import ContactForm from "../../features/contacts/ContactForm";
 import {
 	Dialog,
 	DialogContent,
 	DialogTitle,
 	DialogTrigger,
-} from "../ui/dialog";
+} from "../../ui/dialog";
 import {
 	SidebarMenuAction,
 	SidebarMenuButton,
 	SidebarMenuItem,
-} from "../ui/sidebar";
-import { Tooltip } from "../ui/tooltip";
+} from "../../ui/sidebar";
+import { Tooltip } from "../../ui/tooltip";
+import { getContactColor, getInitials } from "./data";
 
 interface ContactProps {
 	contact: Contact;
 }
-
-const createHash = (name: string) =>
-	name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
-
-const getContactColor = (name: string) => {
-	const hash = createHash(name);
-
-	const avatarColors = [
-		"bg-blue-500 text-white dark:bg-blue-600",
-		"bg-green-500 text-white dark:bg-green-600",
-		"bg-purple-500 text-white dark:bg-purple-600",
-		"bg-pink-500 text-white dark:bg-pink-600",
-		"bg-indigo-500 text-white dark:bg-indigo-600",
-		"bg-red-500 text-white dark:bg-red-600",
-		"bg-yellow-500 text-black dark:bg-yellow-600 dark:text-white",
-		"bg-teal-500 text-white dark:bg-teal-600",
-		"bg-orange-500 text-white dark:bg-orange-600",
-		"bg-cyan-500 text-white dark:bg-cyan-600",
-		"bg-rose-500 text-white dark:bg-rose-600",
-		"bg-emerald-500 text-white dark:bg-emerald-600",
-	];
-
-	return avatarColors[hash % avatarColors.length];
-};
-
-const getInitials = (name: string) => {
-	return name
-		.split(" ")
-		.map((word) => word[0])
-		.join("")
-		.toUpperCase()
-		.slice(0, 2);
-};
 
 const SideBarContactIem = ({ contact }: ContactProps) => {
 	const queryClient = useQueryClient();
@@ -128,7 +96,7 @@ const SideBarContactIem = ({ contact }: ContactProps) => {
 					<Dialog>
 						<DialogTrigger asChild>
 							<SidebarMenuAction
-								className="group-data-[collapsible=icon]:hidden mr-6"
+								className="group-data-[collapsible=icon]:hidden mr-6 cursor-pointer hover:text-blue-600"
 								showOnHover
 							>
 								<Pen className="h-3 w-3" />
@@ -141,7 +109,7 @@ const SideBarContactIem = ({ contact }: ContactProps) => {
 					</Dialog>
 
 					<SidebarMenuAction
-						className="group-data-[collapsible=icon]:hidden"
+						className="group-data-[collapsible=icon]:hidden cursor-pointer hover:text-red-600"
 						onClick={handleDelete}
 						showOnHover
 					>
@@ -150,11 +118,17 @@ const SideBarContactIem = ({ contact }: ContactProps) => {
 				</SidebarMenuItem>
 			</TooltipTrigger>
 			<TooltipContent
-				className="tooltip-collapsed-only tooltip-custom"
+				className="tooltip-collapsed-only tooltip-custom flex gap-1"
 				side="left"
 			>
-				<p>{contact.name}</p>
-				<p className="text-muted-foreground">{contact.phone}</p>
+				<div>
+					<p>{contact.name}</p>
+					<p className="text-muted-foreground">{contact.phone}</p>
+				</div>
+				<div className="flex items-center gap-2">
+					<Pen className="h-4 w-4" />
+					<X className="h-4 w-4" />
+				</div>
 			</TooltipContent>
 		</Tooltip>
 	);

@@ -2,7 +2,7 @@ import { TooltipContent } from "@radix-ui/react-tooltip";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
-import ContactForm from "@/components/features/contacts/ContactForm/ContactForm";
+import ContactForm from "@/components/features/contacts/ContactForm";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { getContacts } from "../../../queries/contacts";
 import { Button } from "../../ui/button";
@@ -25,7 +25,7 @@ import {
 	useSidebar,
 } from "../../ui/sidebar";
 import { Tooltip, TooltipTrigger } from "../../ui/tooltip";
-import SideBarContactIem from "../SideBarContactIem";
+import SideBarContactIem from "../SideBarContactItem/SideBarContactIem";
 
 const ContactsSideBar = () => {
 	const [searchText, setSearchText] = useState("");

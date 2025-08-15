@@ -22,7 +22,7 @@ const Header = () => {
 
 			<div className="flex items-center gap-2">
 				<Button
-					className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200 hover:scale-105 border-border/50"
+					className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200 hover:scale-105 border-border/50 cursor-pointer"
 					onClick={clearMessages}
 					size="icon"
 					title="Clear chat history"
