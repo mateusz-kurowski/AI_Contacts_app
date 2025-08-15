@@ -107,6 +107,16 @@ const ContactForm = ({ isInDialog, contact }: ContactFormProps) => {
 	// Determine which mutation is currently pending
 	const isPending = isEditing ? editMutation.isPending : addMutation.isPending;
 
+	const submitBtn = (
+		<Button
+			className="transition-all duration-200 cursor-pointer hover:bg-primary/70"
+			disabled={isPending}
+			type="submit"
+		>
+			{isEditing ? "Update Contact" : "Add Contact"}
+		</Button>
+	);
+
 	return (
 		<Form {...form}>
 			<form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
@@ -171,34 +181,10 @@ const ContactForm = ({ isInDialog, contact }: ContactFormProps) => {
 								Cancel
 							</Button>
 						</DialogClose>
-						<Button
-							className="transition-all duration-200"
-							disabled={isPending}
-							type="submit"
-						>
-							{isPending
-								? isEditing
-									? "Updating..."
-									: "Adding..."
-								: isEditing
-									? "Update Contact"
-									: "Add Contact"}
-						</Button>
+						{submitBtn}
 					</DialogFooter>
 				) : (
-					<Button
-						className="w-full transition-all duration-200"
-						disabled={isPending}
-						type="submit"
-					>
-						{isPending
-							? isEditing
-								? "Updating Contact..."
-								: "Adding Contact..."
-							: isEditing
-								? "Update Contact"
-								: "Add Contact"}
-					</Button>
+					submitBtn
 				)}
 			</form>
 		</Form>
