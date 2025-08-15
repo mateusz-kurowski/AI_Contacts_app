@@ -16,3 +16,6 @@ class ChatService:
             model=self._model, contents=user_input, config=self._config
         )
         return resp.text or ""
+
+def get_chat_service() -> ChatService:
+    return ChatService()

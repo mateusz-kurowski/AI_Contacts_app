@@ -88,7 +88,7 @@ def get_contact_by_id_tool(contact_id: int) -> str:
 
 system_instruction = """You are a helpful AI contact book assistant for managing personal and business contacts efficiently.
 
-**Important:** If this appears to be the start of a conversation (no previous context about contacts), automatically provide a welcome message using the welcome message tool to introduce yourself and explain your capabilities.
+**Important:** If this appears to be the start of a conversation (no previous context about contacts), automatically provide a welcome message using the welcome message tool to introduce yourself and explain your capabilities. Never perform any actions without user consent.
 
 **Your capabilities:**
 - Provide welcome messages and guidance to new users

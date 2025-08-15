@@ -1,12 +1,18 @@
 from typing import Literal
 
 from pydantic import BaseModel, Field, constr
+from pydantic_extra_types.phone_numbers import PhoneNumberValidator
+from typing import Annotated
+
+
+# Phone number in E.164 format (almost raw)
+PhoneE164 = Annotated[str, PhoneNumberValidator(number_format="E164")]
 
 
 # Pydantic schemas
 class ContactBase(BaseModel):
     name: constr(min_length=1)  # type: ignore
-    phone: constr(min_length=1)  # type: ignore
+    phone: PhoneE164
 
 
 class ContactCreate(ContactBase):

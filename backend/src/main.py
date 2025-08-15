@@ -35,12 +35,6 @@ app.add_middleware(
 app.include_router(contacts_router)
 app.include_router(chat_router)
 
-
-@app.get("/")
-def read_root():
-    return {"message": "Contacts API is running"}
-
-
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}

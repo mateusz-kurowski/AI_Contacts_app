@@ -6,20 +6,15 @@ from fastapi.routing import APIRouter
 from pydantic import ValidationError
 
 from src.db.schemas import ChatResponse, NewChatMessage
-from src.services.chat_service import ChatService
+from src.services.chat_service import ChatService, get_chat_service
 
 router = APIRouter(prefix="/chat", tags=["chat"])
-
-
-def get_chat_service() -> ChatService:
-    return ChatService()
 
 
 @router.post("/", response_model=ChatResponse)
 @router.post("", response_model=ChatResponse)
 def read_chat(input: NewChatMessage, svc: ChatService = Depends(get_chat_service)):
     try:
-        print(input)
         response = svc.get_chat_response(input.content)
         # Return ISO string
         current_timestamp = datetime.now(timezone.utc).isoformat()
