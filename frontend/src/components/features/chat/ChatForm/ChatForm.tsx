@@ -29,7 +29,7 @@ const ChatForm = () => {
 		reValidateMode: "onBlur",
 	});
 	const { addMessage, setIsTyping } = useChatStore();
-
+	let lastSubmittedData: ChatFormData | null = null;
 	const chatMutation = useMutation({
 		mutationFn: sendMessage,
 		mutationKey: ["newMessage"],
@@ -37,36 +37,36 @@ const ChatForm = () => {
 			toast.error("Error sending message", {
 				action: {
 					label: "Retry",
-					onClick: () => chatMutation.mutate(chatForm.getValues()),
+					onClick: () =>
+						lastSubmittedData && chatMutation.mutate(lastSubmittedData),
 				},
 				description: error.message,
 			});
+			chatForm.setValue("content", lastSubmittedData?.content || "");
 		},
-	});
-
-	const handleSubmit = async (data: ChatFormData) => {
-		try {
+		onMutate: (data) => {
+			chatForm.reset();
+			setIsTyping(true);
 			addMessage({
 				content: data.content,
 				createdAt: new Date(),
 				id: uuidv4(),
 				role: "user",
 			});
-			chatForm.reset();
-			setIsTyping(true);
-			const response = await chatMutation.mutateAsync(data);
-			addMessage({ ...response, createdAt: new Date(response.createdAt) });
+		},
+		onSettled: () => {
+			lastSubmittedData = null;
+			setIsTyping(false);
+		},
+		onSuccess: (data) => {
+			addMessage({ ...data, createdAt: new Date(data.createdAt) });
 			queryClient.invalidateQueries({ queryKey: ["contacts"] });
-			setIsTyping(false);
-		} catch {
-			setIsTyping(false);
-			toast.error("Error sending message", {
-				action: {
-					label: "Retry",
-					onClick: () => chatMutation.mutate(chatForm.getValues()),
-				},
-			});
-		}
+		},
+	});
+
+	const handleSubmit = (data: ChatFormData) => {
+		lastSubmittedData = data;
+		chatMutation.mutate(data);
 	};
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -95,7 +95,7 @@ const ChatForm = () => {
 										/>
 									</FormControl>
 									<Button
-										className="absolute bottom-3 right-3 h-8 w-8 p-0"
+										className="absolute bottom-3 right-3 h-8 w-8 p-0 cursor-pointer"
 										disabled={
 											!chatForm.getValues("content").trim() ||
 											chatMutation.isPending

@@ -13,28 +13,31 @@ const ChatHistory = () => {
 		error,
 		isLoading,
 	} = useQuery({
-		enabled: messages.length === 0, // Only fetch when no messages exist
+		enabled: !messages.length,
 		queryFn: getHelloMessage,
 		queryKey: ["helloMessage"],
 		retry: 1,
 	});
 
-	useEffect(() => {
-		setIsTyping(isLoading);
-	}, [isLoading, setIsTyping]);
+	const areMessagesEmpty = messages.length === 0;
 
 	useEffect(() => {
-		if (helloMessage && messages.length === 0) {
+		if (areMessagesEmpty) {
+			setIsTyping(isLoading);
+		}
+	}, [isLoading, setIsTyping, areMessagesEmpty]);
+
+	useEffect(() => {
+		if (helloMessage && areMessagesEmpty) {
 			addMessage({
 				...helloMessage,
 				createdAt: new Date(helloMessage.createdAt),
 			});
 		}
-	}, [helloMessage, messages.length, addMessage]);
+	}, [helloMessage, areMessagesEmpty, addMessage]);
 
 	useEffect(() => {
-		if (error && messages.length === 0) {
-			console.error("Failed to get hello message:", error);
+		if (error && areMessagesEmpty) {
 			addMessage({
 				content:
 					"Hello! I'm your AI Contacts assistant. How can I help you today?",
@@ -43,7 +46,7 @@ const ChatHistory = () => {
 				role: "assistant",
 			});
 		}
-	}, [error, messages.length, addMessage]);
+	}, [areMessagesEmpty, addMessage, error]);
 
 	// Auto-scroll effect
 	// biome-ignore lint/correctness/useExhaustiveDependencies: scrolling is based on new message arrival
