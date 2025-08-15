@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres
+    image: postgres:latest
     restart: always
     shm_size: 128mb
     ports:
@@ -26,34 +26,34 @@ services:
         uv run alembic upgrade head
       "
     restart: "no"
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
-    env_file:
-      - ./backend/.env
-    volumes:
-      - ./backend:/app
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     - db
+  #   env_file:
+  #     - ./backend/.env
+  #   volumes:
+  #     - ./backend:/app
 
   adminer:
-    image: adminer
+    image: adminer:latest
     restart: always
     ports:
       - "8080:8080"
 
-  nginx:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
+  # nginx:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - backend
 volumes:
     db_data:  
     nginx_logs:

@@ -7,7 +7,7 @@
 		"*.env": "dotenv"
 	},
 	"python.linting.enabled": true,
-	"python.formatting.provider": "black",
+	"python.formatting.provider": "ruff",
 	"[python]": {
 		"editor.formatOnSave": true,
 		"editor.codeActionsOnSave": {

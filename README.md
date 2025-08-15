@@ -20,9 +20,9 @@ docker-compose -f compose.local.yml up --build
 
 ## Access URLs
 
-- **Frontend**: http://localhost:3000
-- **API**: http://localhost:8000 ([Docs](http://localhost:8000/docs))
-- **Database Admin**: http://localhost:8080 (root/example)
+- **Frontend**: <http://localhost:3000>
+- **API**: <http://localhost:8000> ([Docs](http://localhost:8000/docs))
+- **Database Admin**: <http://localhost:8080> (root/example)
 
 ## Tech Stack
 
@@ -32,7 +32,7 @@ docker-compose -f compose.local.yml up --build
 
 ## API Endpoints
 
-```
+```any
 GET    /                    # Health check
 POST   /contacts/           # Create contact
 GET    /contacts/           # List contacts (pagination: ?skip=0&limit=10)
@@ -58,7 +58,7 @@ cd frontend && pnpm install && pnpm dev
 ### Testing
 
 - **Bruno**: Import collection from `swe-requests/`, set env to "dev"
-- **Manual**: Use Swagger UI at http://localhost:8000/docs
+- **Manual**: Use Swagger UI at <http://localhost:8000/docs>
 
 ### Database
 
