@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 import ContactForm from "@/components/features/contacts/ContactForm";
+import { Alert } from "@/components/ui/alert";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { getContacts } from "../../../queries/contacts";
 import { Button } from "../../ui/button";
@@ -42,14 +43,14 @@ const ContactsSideBar = () => {
 
 		return data.filter(
 			(contact) =>
-				contact.name?.toLowerCase().includes(searchText.toLowerCase()) ||
-				contact.phone?.includes(searchText),
+				contact.name.toLowerCase().includes(searchText.toLowerCase()) ||
+				contact.phone.includes(searchText),
 		);
 	}, [data, searchText]);
 
 	if (isLoading) return;
-	if (error) return <p>Error: {error.message}</p>;
-	if (!data) return <p>No data found</p>;
+	if (error) return <Alert variant="destructive">{error.message}</Alert>;
+	if (!data) return <p>No contacts found</p>;
 
 	return (
 		<Sidebar

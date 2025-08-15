@@ -1,16 +1,11 @@
 import { TooltipContent, TooltipTrigger } from "@radix-ui/react-tooltip";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Pen, X } from "lucide-react";
+import { X } from "lucide-react";
 import { toast } from "sonner";
+import EditContactDialog from "@/components/features/contacts/EditContactDialog";
+import { Button } from "@/components/ui/button";
 import { addContact, deleteContact } from "../../../queries/contacts";
 import type { Contact } from "../../../types/contact";
-import ContactForm from "../../features/contacts/ContactForm";
-import {
-	Dialog,
-	DialogContent,
-	DialogTitle,
-	DialogTrigger,
-} from "../../ui/dialog";
 import {
 	SidebarMenuAction,
 	SidebarMenuButton,
@@ -23,7 +18,7 @@ interface ContactProps {
 	contact: Contact;
 }
 
-const SideBarContactIem = ({ contact }: ContactProps) => {
+const SideBarContactItem = ({ contact }: ContactProps) => {
 	const queryClient = useQueryClient();
 
 	const handleDelete = async () => {
@@ -92,22 +87,7 @@ const SideBarContactIem = ({ contact }: ContactProps) => {
 							</span>
 						</span>
 					</SidebarMenuButton>
-
-					<Dialog>
-						<DialogTrigger asChild>
-							<SidebarMenuAction
-								className="group-data-[collapsible=icon]:hidden mr-6 cursor-pointer hover:text-blue-600"
-								showOnHover
-							>
-								<Pen className="h-3 w-3" />
-							</SidebarMenuAction>
-						</DialogTrigger>
-						<DialogContent>
-							<DialogTitle>Edit Contact</DialogTitle>
-							<ContactForm contact={contact} isInDialog />
-						</DialogContent>
-					</Dialog>
-
+					<EditContactDialog contact={contact} isAction />
 					<SidebarMenuAction
 						className="group-data-[collapsible=icon]:hidden cursor-pointer hover:text-red-600"
 						onClick={handleDelete}
@@ -125,13 +105,19 @@ const SideBarContactIem = ({ contact }: ContactProps) => {
 					<p>{contact.name}</p>
 					<p className="text-muted-foreground">{contact.phone}</p>
 				</div>
-				<div className="flex items-center gap-2">
-					<Pen className="h-4 w-4" />
-					<X className="h-4 w-4" />
+				<div className="flex flex-col items-center gap-2">
+					<EditContactDialog contact={contact} />
+					<Button
+						className="h-3 w-3 cursor-pointer hover:text-red-600"
+						onClick={handleDelete}
+						variant="ghost"
+					>
+						<X />
+					</Button>
 				</div>
 			</TooltipContent>
 		</Tooltip>
 	);
 };
 
-export default SideBarContactIem;
+export default SideBarContactItem;
