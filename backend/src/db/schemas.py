@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import BaseModel, Field, constr
+from pydantic import BaseModel, ConfigDict, Field, constr
 from pydantic_extra_types.phone_numbers import PhoneNumberValidator
 from typing import Annotated
 
@@ -24,8 +24,7 @@ class ContactUpdate(ContactBase):
 class Contact(ContactBase):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ChatResponse(BaseModel):
@@ -36,11 +35,11 @@ class ChatResponse(BaseModel):
 
 
 class NewChatMessage(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     content: str = Field(
-        ...,
         min_length=2,
         max_length=400,
-        strip_whitespace=True,
         examples=["Hello, how can I help you?"],
         description="The content of the chat message, must be between 2 and 400 characters long.",
     )

@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: {{url}}/contacts/1
+  url: {{url}}/contacts/:contactID
   body: none
   auth: inherit
+}
+
+params:path {
+  contactID: 14
 }
 
 tests {
