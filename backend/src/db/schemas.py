@@ -9,7 +9,6 @@ from typing import Annotated
 PhoneE164 = Annotated[str, PhoneNumberValidator(number_format="E164")]
 
 
-# Pydantic schemas
 class ContactBase(BaseModel):
     name: constr(min_length=1)  # type: ignore
     phone: PhoneE164
