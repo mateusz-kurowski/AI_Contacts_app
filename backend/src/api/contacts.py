@@ -4,14 +4,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from src.db.db import get_db
-from src.db.schemas import ContactCreate, ContactOut, ContactUpdate
+from src.db.schemas import ContactCreate, Contact, ContactUpdate
 from src.services.contact_service import ContactService, get_contact_service
 
 router = APIRouter(prefix="/contacts", tags=["contacts"])
 
 
-@router.post("/", response_model=ContactOut)
-@router.post("", response_model=ContactOut)
+@router.post("/", response_model=Contact)
+@router.post("", response_model=Contact)
 def create_contact(
     contact: ContactCreate,
     db: Session = Depends(get_db),
@@ -25,8 +25,8 @@ def create_contact(
     return svc.create_contact(db=db, contact=contact)
 
 
-@router.get("/", response_model=List[ContactOut])
-@router.get("", response_model=List[ContactOut])
+@router.get("/", response_model=List[Contact])
+@router.get("", response_model=List[Contact])
 def read_contacts(
     skip: int = 0,
     limit: int = 100,
@@ -38,7 +38,7 @@ def read_contacts(
     return contacts
 
 
-@router.get("/{contact_id}", response_model=ContactOut)
+@router.get("/{contact_id}", response_model=Contact)
 def read_contact(
     contact_id: int,
     db: Session = Depends(get_db),
@@ -51,7 +51,7 @@ def read_contact(
     return db_contact
 
 
-@router.put("/{contact_id}", response_model=ContactOut)
+@router.put("/{contact_id}", response_model=Contact)
 def update_contact(
     contact_id: int,
     contact: ContactUpdate,

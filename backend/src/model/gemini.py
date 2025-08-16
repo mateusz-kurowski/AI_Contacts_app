@@ -1,7 +1,7 @@
 import os
 from google import genai
 from google.genai import types
-from src.config.config import app_config
+from src.config.config import model_config
 
 API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
 if not API_KEY:
@@ -10,5 +10,5 @@ if not API_KEY:
 gemma_client = genai.Client(api_key=API_KEY)
 
 default_config = types.GenerateContentConfig(
-    **app_config.model_client.model_dump(),
+    **model_config.model_client.model_dump(),
 )

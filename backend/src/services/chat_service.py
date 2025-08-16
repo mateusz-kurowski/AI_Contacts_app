@@ -1,11 +1,13 @@
 from src.model.gemini import gemma_client, default_config
 from google import genai
-from src.config.config import app_config
+from src.config.config import model_config
 
 
 class ChatService:
     def __init__(
-        self, genai_client: genai.Client | None = None, model: str = app_config.model_id
+        self,
+        genai_client: genai.Client | None = None,
+        model: str = model_config.model_id,
     ):
         self._client = genai_client or gemma_client
         self._model = model

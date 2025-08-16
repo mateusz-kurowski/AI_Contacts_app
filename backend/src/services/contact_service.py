@@ -2,8 +2,7 @@ from datetime import datetime, timedelta
 from typing import List, Optional
 
 from sqlalchemy.orm import Session
-from src.db.Contact import Contact
-from src.db.schemas import ContactCreate, ContactUpdate
+from src.db.schemas import ContactCreate, ContactUpdate, Contact
 
 
 class ContactService:

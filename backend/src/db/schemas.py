@@ -22,7 +22,7 @@ class ContactUpdate(ContactBase):
     pass
 
 
-class ContactOut(ContactBase):
+class Contact(ContactBase):
     id: int
 
     class Config:
