@@ -1,5 +1,4 @@
 # src/main.py
-from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,16 +7,8 @@ from src.api.chat import router as chat_router
 from src.api.contacts import router as contacts_router
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    print("Starting up...")
-    yield
-    print("Shutting down...")
-
-
 app = FastAPI(
     title="Contacts API",
-    lifespan=lifespan,
     prefix="/api",
     docs_url="/docs",
     redoc_url="/redoc",

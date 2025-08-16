@@ -1,7 +1,9 @@
 from sqlalchemy import Column, DateTime, Integer, String, func
+from sqlalchemy.orm import DeclarativeBase
 
-from src.db.models import Base
 
+class Base(DeclarativeBase):
+    pass
 
 # SQLAlchemy model
 class ContactModel(Base):
