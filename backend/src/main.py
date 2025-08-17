@@ -60,7 +60,7 @@ mcp_app = mcp.http_app(path="/mcp")
 
 
 app = create_base_app(lifespan=mcp_app.lifespan)
-app.mount("/llm", mcp_app)
+app.mount("/api/llm", mcp_app)
 
 if __name__ == "__main__":
     import uvicorn
