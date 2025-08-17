@@ -1,12 +1,16 @@
 # src/main.py
 import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastmcp import FastMCP
+
 from src.api.chat import router as chat_router
 from src.api.contacts import router as contacts_router
-from src.mcp.tools.contact import register_contact_tools
+from src.mcp.prompts.chat import register_chat_prompts
 from src.mcp.prompts.contact import register_contacts_prompts
+from src.mcp.tools.contact import register_contact_tools
+
 
 def create_base_app(lifespan=None) -> FastAPI:
     """Create and configure the base FastAPI app"""
@@ -51,6 +55,7 @@ mcp = FastMCP(
 
 register_contact_tools(mcp)
 register_contacts_prompts(mcp)
+register_chat_prompts(mcp)
 mcp_app = mcp.http_app(path="/mcp")
 
 

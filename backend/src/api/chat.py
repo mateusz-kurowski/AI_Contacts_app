@@ -31,10 +31,12 @@ async def read_chat(
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/hello", response_model=ChatResponse)
-def get_hello_message(svc: ChatService = Depends(get_chat_service)):
+async def get_hello_message(svc: ChatService = Depends(get_chat_service)):
     """Get a simple hello message from the chat service."""
     try:
-        response = svc.get_chat_response("Hello! Please introduce yourself")
+        response = await svc.get_chat_response_with_mcp(
+            "Hello! Please introduce yourself"
+        )
         current_timestamp = datetime.now(timezone.utc).isoformat()
         return ChatResponse(
             content=response,
