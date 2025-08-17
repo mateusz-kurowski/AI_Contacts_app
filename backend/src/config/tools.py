@@ -1,7 +1,7 @@
 from src.db.db import get_db
 from src.db.schemas import ContactCreate, ContactUpdate
 from src.services.contact_service import get_contact_service
-
+from src.api.responses import Response
 
 def create_contact_tool(name: str, phone: str) -> str:
     """Create a new contact with the given name and phone number."""
@@ -22,7 +22,7 @@ def get_contacts_tool() -> str:
         service = get_contact_service()
         contacts = service.get_contacts(db)
         if not contacts:
-            return "No contacts found."
+            return Response.NO_CONTACTS_FOUND
         contact_list = [f"{c.name}: {c.phone}" for c in contacts]
         return "Contacts:\n" + "\n".join(contact_list)
     finally:
@@ -39,7 +39,7 @@ def update_contact_by_phone_num_tool(phone: str, name: str, new_phone: str) -> s
         if result:
             return f"Contact updated successfully: {result.name} - {result.phone}"
         else:
-            return "Contact not found."
+            return Response.NO_CONTACTS_FOUND
     finally:
         db.close()
 
@@ -62,7 +62,7 @@ def search_contacts_tool(query: str) -> str:
         service = get_contact_service()
         contacts = service.search_contacts(db, query)
         if not contacts:
-            return f"No contacts found matching '{query}'"
+            return Response.NO_CONTACTS_FOUND
         contact_list = [f"{c.name}: {c.phone}" for c in contacts]
         return f"Found {len(contacts)} contact(s) matching '{query}':\n" + "\n".join(
             contact_list
@@ -78,7 +78,7 @@ def get_contact_by_id_tool(contact_id: int) -> str:
         service = get_contact_service()
         contact = service.get_contact_by_id(db, contact_id)
         if not contact:
-            return "Contact not found."
+            return Response.CONTACT_NOT_FOUND
         return f"Contact Details:\nID: {contact.id}\nName: {contact.name}\nPhone: {contact.phone}\nCreated: {contact.created_at}"
     finally:
         db.close()

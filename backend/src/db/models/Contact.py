@@ -15,3 +15,11 @@ class ContactModel(Base):
 
     def __repr__(self):
         return f"<ContactModel(id={self.id}, name='{self.name}', phone='{self.phone}')>"
+
+    def dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "phone": self.phone,
+            "createdAt": self.createdAt,
+        }

@@ -1,15 +1,6 @@
 from google.genai.types import GenerateContentConfig
 from pydantic import BaseModel
 
-from src.config.tools import (
-    create_contact_tool,
-    delete_contact_by_number_tool,
-    get_contact_by_id_tool,
-    get_contacts_tool,
-    search_contacts_tool,
-    update_contact_by_phone_num_tool,
-)
-
 system_instruction = """You are a helpful AI contact book assistant for managing personal and business contacts efficiently.
 
 **Important:** If this appears to be the start of a conversation (no previous context about contacts), automatically provide a welcome message using the welcome message tool to introduce yourself and explain your capabilities. Never perform any actions without user consent.
@@ -44,16 +35,6 @@ class AppConfig(BaseModel):
     model_id: str = "gemini-2.0-flash"
 
 
-model_config: AppConfig = AppConfig(
-    model_client=GenerateContentConfig(
-        system_instruction=system_instruction,
-        tools=[
-            create_contact_tool,
-            get_contacts_tool,
-            update_contact_by_phone_num_tool,
-            delete_contact_by_number_tool,
-            search_contacts_tool,
-            get_contact_by_id_tool,
-        ],
-    )
+model_config = AppConfig(
+    model_client=GenerateContentConfig(system_instruction=system_instruction)
 )

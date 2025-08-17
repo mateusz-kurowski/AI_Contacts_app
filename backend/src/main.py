@@ -2,9 +2,11 @@
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastmcp import FastMCP
 from src.api.chat import router as chat_router
 from src.api.contacts import router as contacts_router
-from fastmcp import FastMCP
+from src.mcp.tools.contact import register_contact_tools
+from src.mcp.prompts.contact import register_contacts_prompts
 
 def create_base_app(lifespan=None) -> FastAPI:
     """Create and configure the base FastAPI app"""
@@ -35,8 +37,22 @@ def create_base_app(lifespan=None) -> FastAPI:
 
 
 base_app = create_base_app()
-mcp = FastMCP.from_fastapi(base_app)
+
+mcp = FastMCP(
+    name="Contacts Server",
+    instructions="""
+    This server provides data about contacts.
+    You can use it to retrieve, create, update, and delete contacts.
+    """,
+    on_duplicate_tools="error",
+    on_duplicate_prompts="error",
+    on_duplicate_resources="error",
+)
+
+register_contact_tools(mcp)
+register_contacts_prompts(mcp)
 mcp_app = mcp.http_app(path="/mcp")
+
 
 app = create_base_app(lifespan=mcp_app.lifespan)
 app.mount("/llm", mcp_app)
