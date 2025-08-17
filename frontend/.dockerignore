@@ -2,3 +2,8 @@ dist/
 node_modules/
 .gitignore
 biome.json
+
+.env.local
+.env.example
+.env.development
+.env
