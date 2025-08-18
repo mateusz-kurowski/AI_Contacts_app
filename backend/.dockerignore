@@ -1,5 +1,10 @@
 .venv/
 .ruff_cache/
 __pycache__/
-.env
 .gitignore
+.vscode/
+# dotenv
+.env
+.env.development
+.env.example
+.env.local
