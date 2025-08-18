@@ -1,10 +1,10 @@
 import { TooltipContent } from "@radix-ui/react-tooltip";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, ArrowRight, Plus } from "lucide-react";
+import { AlertCircle, ArrowLeft, ArrowRight, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 import ContactForm from "@/components/features/contacts/ContactForm";
-import { Alert } from "@/components/ui/alert";
 import { ModeToggle } from "@/components/ui/mode-toggle";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getContacts } from "../../../queries/contacts";
 import { Button } from "../../ui/button";
 import {
@@ -32,10 +32,15 @@ const ContactsSideBar = () => {
 	const [searchText, setSearchText] = useState("");
 	const { toggleSidebar, open, isMobile } = useSidebar();
 
-	const { data, error, isLoading } = useQuery({
+	const { data, isError, error, isPending } = useQuery({
 		queryFn: getContacts,
 		queryKey: ["contacts"],
+		staleTime: 1000 * 60 * 5, // 5 minutes
 	});
+
+	if (data) {
+		localStorage.setItem("contactsCount", JSON.stringify(data.length));
+	}
 
 	// Filter contacts based on search text
 	const filteredContacts = useMemo(() => {
@@ -47,10 +52,6 @@ const ContactsSideBar = () => {
 				contact.phone.includes(searchText),
 		);
 	}, [data, searchText]);
-
-	if (isLoading) return;
-	if (error) return <Alert variant="destructive">{error.message}</Alert>;
-	if (!data) return <p>No contacts found</p>;
 
 	return (
 		<Sidebar
@@ -125,9 +126,48 @@ const ContactsSideBar = () => {
 								</DialogContent>
 							</Dialog>
 						</SidebarMenuItem>
-						{filteredContacts.map((contact) => (
-							<SideBarContactIem contact={contact} key={contact.id} />
-						))}
+						{/* if is loading return skeletons */}
+						{isPending ? (
+							[
+								Array.from(
+									{
+										length: +(localStorage.getItem("contactsCount") || "5"),
+									},
+									(_, i) => (
+										<Skeleton
+											className="rounded-full h-6 w-6 self-center"
+											key={`skeleton-${
+												// biome-ignore lint/suspicious/noArrayIndexKey: this is safe
+												i
+											}`}
+										/>
+									),
+								),
+							]
+							// if error, return error icon and message
+						) : isError ? (
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<span className="self-center flex gap-4 items-center">
+										<AlertCircle className="text-lg text-destructive" />
+										<p className="visible-sidebar-sr-only text-destructive">
+											{error.message}
+										</p>
+									</span>
+								</TooltipTrigger>
+								<TooltipContent
+									className="tooltip-custom tooltip-collapsed-only"
+									side="left"
+								>
+									{error.message}
+								</TooltipContent>
+							</Tooltip>
+						) : (
+							// finally return contacts list
+							filteredContacts.map((contact) => (
+								<SideBarContactIem contact={contact} key={contact.id} />
+							))
+						)}
 					</SidebarMenu>
 				</SidebarGroup>
 			</SidebarContent>
