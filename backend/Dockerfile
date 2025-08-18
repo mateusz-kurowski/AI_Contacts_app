@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["uv", "run", "fastapi", "run", "src.main:app", "--port", "8000"]
+CMD ["uv", "run", "fastapi", "run", "src/main.py", "--port", "8000"]
