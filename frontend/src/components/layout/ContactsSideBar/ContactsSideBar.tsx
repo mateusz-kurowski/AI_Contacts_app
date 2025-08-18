@@ -172,7 +172,9 @@ const ContactsSideBar = () => {
 				</SidebarGroup>
 			</SidebarContent>
 			<SidebarFooter>
-				<ModeToggle />
+				<div className="pb-3 group-data-[collapsible=icon]:self-center ">
+					<ModeToggle />
+				</div>
 			</SidebarFooter>
 		</Sidebar>
 	);
