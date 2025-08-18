@@ -1,6 +1,13 @@
 import { TooltipContent } from "@radix-ui/react-tooltip";
 import { useQuery } from "@tanstack/react-query";
-import { AlertCircle, ArrowLeft, ArrowRight, Plus } from "lucide-react";
+import {
+	AlertCircle,
+	ArrowDownAZIcon,
+	ArrowLeft,
+	ArrowRight,
+	ArrowUpAZIcon,
+	Plus,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import ContactForm from "@/components/features/contacts/ContactForm";
 import { ModeToggle } from "@/components/ui/mode-toggle";
@@ -31,7 +38,7 @@ import SideBarContactIem from "../SideBarContactItem/SideBarContactIem";
 const ContactsSideBar = () => {
 	const [searchText, setSearchText] = useState("");
 	const { toggleSidebar, open, isMobile } = useSidebar();
-
+	const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 	const { data, isError, error, isPending } = useQuery({
 		queryFn: getContacts,
 		queryKey: ["contacts"],
@@ -52,6 +59,21 @@ const ContactsSideBar = () => {
 				contact.phone.includes(searchText),
 		);
 	}, [data, searchText]);
+
+	const sortedContacts = useMemo(() => {
+		if (!filteredContacts) return [];
+
+		return [...filteredContacts].sort((a, b) => {
+			if (sortOrder === "asc") {
+				return a.name.localeCompare(b.name);
+			}
+			return b.name.localeCompare(a.name);
+		});
+	}, [filteredContacts, sortOrder]);
+
+	const toggleSortOrder = () => {
+		setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+	};
 
 	return (
 		<Sidebar
@@ -90,7 +112,20 @@ const ContactsSideBar = () => {
 				</Tooltip>
 
 				<SidebarHeader className="visible-sidebar-sr-only">
-					<h2>Contacts</h2>
+					<div className="flex justify-between items-center">
+						<h2>Contacts</h2>
+						<Button
+							className="cursor-pointer"
+							onClick={toggleSortOrder}
+							variant="ghost"
+						>
+							{sortOrder === "asc" ? (
+								<ArrowDownAZIcon className="h-5 w-5" />
+							) : (
+								<ArrowUpAZIcon className="h-5 w-5" />
+							)}
+						</Button>
+					</div>
 					<Input
 						onChange={(e) => setSearchText(e.target.value)}
 						placeholder="Find contact"
@@ -164,7 +199,7 @@ const ContactsSideBar = () => {
 							</Tooltip>
 						) : (
 							// finally return contacts list
-							filteredContacts.map((contact) => (
+							sortedContacts.map((contact) => (
 								<SideBarContactIem contact={contact} key={contact.id} />
 							))
 						)}
