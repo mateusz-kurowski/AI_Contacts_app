@@ -104,7 +104,6 @@ const SideBarContactItem = ({ contact }: ContactProps) => {
 						<SidebarMenuAction
 							className="group-data-[collapsible=icon]:hidden cursor-pointer text-red-600"
 							onClick={handleDelete}
-							showOnHover
 						>
 							<X className="h-3 w-3" />
 						</SidebarMenuAction>

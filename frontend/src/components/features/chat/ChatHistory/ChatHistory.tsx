@@ -8,18 +8,18 @@ const ChatHistory = () => {
 	const { isTyping, messages, addMessage, setIsTyping } = useChatStore();
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+	const areMessagesEmpty = !messages.length;
+
 	const {
 		data: helloMessage,
 		error,
 		isLoading,
 	} = useQuery({
-		enabled: !messages.length,
+		enabled: areMessagesEmpty,
 		queryFn: getHelloMessage,
 		queryKey: ["helloMessage"],
 		retry: 1,
 	});
-
-	const areMessagesEmpty = messages.length === 0;
 
 	useEffect(() => {
 		if (areMessagesEmpty) {
@@ -60,8 +60,12 @@ const ChatHistory = () => {
 	}, [messages]);
 
 	return (
-		<div className="w-full h-full overflow-y-auto p-2" ref={scrollContainerRef}>
-			<MessageList isTyping={isTyping} messages={messages} />
+		<div className="w-full h-full overflow-y-auto p-1" ref={scrollContainerRef}>
+			<MessageList
+				isTyping={isTyping}
+				messageOptions={{ animation: "fade" }}
+				messages={messages}
+			/>
 		</div>
 	);
 };
