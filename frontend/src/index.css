@@ -164,7 +164,9 @@
 	.tooltip-collapsed-only {
 		@apply group-data-[collapsible=icon]:block hidden;
 	}
-
+	.tooltip-collapsed-only-flex {
+		@apply group-data-[collapsible=icon]:flex hidden;
+	}
 	.tooltip-expanded-only {
 		@apply group-data-[collapsible=icon]:hidden;
 	}

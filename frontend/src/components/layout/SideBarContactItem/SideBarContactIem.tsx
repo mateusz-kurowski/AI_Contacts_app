@@ -101,7 +101,7 @@ const SideBarContactItem = ({ contact }: ContactProps) => {
 							</span>
 						</SidebarMenuButton>
 						<SidebarMenuAction
-							className="group-data-[collapsible=icon]:hidden cursor-pointer text-red-600"
+							className="tooltip-expanded-only cursor-pointer text-red-600"
 							onClick={handleDelete}
 						>
 							<X className="h-3 w-3" />
@@ -109,7 +109,7 @@ const SideBarContactItem = ({ contact }: ContactProps) => {
 					</SidebarMenuItem>
 				</TooltipTrigger>
 				<TooltipContent
-					className="tooltip-collapsed-only tooltip-custom flex items-center gap-1"
+					className="tooltip-custom  items-center gap-1 tooltip-collapsed-only-flex"
 					side="left"
 				>
 					<div>
