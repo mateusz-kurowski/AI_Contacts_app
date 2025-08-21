@@ -3,18 +3,29 @@ services:
     image: postgres
     restart: always
     shm_size: 128mb
-
+    container_name: postgres_db
     env_file:
-      - ./db/.env
+      - stack.env
     volumes:
       - db_data:/var/lib/postgresql/data
+  cache:
+    image: redis:8.2.1
+    restart: always
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    container_name: redis_cache
+    ports:
+      - "6379:6379"
+    env_file:
+      - stack.env
   adminer:
     image: adminer
+    container_name: adminer
     restart: always
   migrate:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    container_name: migrate
     depends_on:
       - db
     env_file:
@@ -32,6 +43,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     restart: unless-stopped
+    container_name: backend
     depends_on:
       - db
     env_file:
@@ -43,6 +55,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    container_name: nginx
     ports:
       - "80:80"
     depends_on:
