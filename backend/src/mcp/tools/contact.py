@@ -1,14 +1,13 @@
 from typing import Annotated
 
-import phonenumbers
 from fastmcp import FastMCP
-from phonenumbers import NumberParseException, PhoneNumberFormat
 from pydantic import Field
 from src.api.responses import Response
 from src.db.db import get_db
-from src.db.schemas import ContactCreate, ContactUpdate, phone_e164_regex
+from src.db.schemas import ContactCreate, ContactUpdate
 from src.mcp.tools.schema import GetContactResponse, GetContactsResponse, McpResponse
 from src.services.contact_service import get_contact_service
+from src.utils.phone import format_phone_number
 
 
 def register_contact_tools(mcp: FastMCP):
@@ -118,8 +117,7 @@ def register_contact_tools(mcp: FastMCP):
         phone: Annotated[
             str,
             Field(
-                description="The phone number of the contact (E.164 format like +1234567890)",
-                pattern=phone_e164_regex.pattern,
+                description="The phone number of the contact",
             ),
         ],
     ) -> GetContactResponse:
@@ -167,10 +165,7 @@ def register_contact_tools(mcp: FastMCP):
         name: Annotated[str, "The new name of the contact"],
         phone: Annotated[
             str,
-            Field(
-                description="The new phone number of the contact",
-                pattern=phone_e164_regex.pattern,
-            ),
+            "The new phone number of the contact",
         ],
     ) -> GetContactResponse:
         """Update an existing contact's information"""
@@ -301,18 +296,3 @@ def register_contact_tools(mcp: FastMCP):
             success=True,
             contact=formatted,
         )
-
-
-def format_phone_number(phone: str, default_region: str = "PL") -> str | None:
-    """
-    Format phone number to E.164.
-    Returns None if invalid or cannot be parsed.
-    """
-    try:
-        stripped_phone = phone.strip()
-        num = phonenumbers.parse(stripped_phone, default_region)
-        if not phonenumbers.is_valid_number(num):
-            return None
-        return phonenumbers.format_number(num, PhoneNumberFormat.E164)
-    except NumberParseException:
-        return None

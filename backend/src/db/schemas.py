@@ -1,11 +1,9 @@
-import re
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, constr
 from pydantic_extra_types.phone_numbers import PhoneNumberValidator
 
 PhoneE164 = Annotated[str, PhoneNumberValidator(number_format="E164")]
-phone_e164_regex = re.compile(r"^\+[1-9]\d{1,14}$")
 
 class ContactBase(BaseModel):
     name: constr(min_length=1, max_length=50)  # type: ignore
