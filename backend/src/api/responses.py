@@ -12,3 +12,5 @@ class Response(Enum):
     CONTACT_RETRIEVAL_FAILED = "Failed to retrieve contact"
     CONTACT_UPDATE_FAILED = "Failed to update contact"
     CONTACT_DELETION_FAILED = "Failed to delete contact"
+
+    INVALID_PHONE_NUMBER = "Invalid phone number format"

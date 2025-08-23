@@ -5,6 +5,7 @@ from sqlalchemy.orm import DeclarativeBase
 class Base(DeclarativeBase):
     pass
 
+
 # SQLAlchemy model
 class ContactModel(Base):
     __tablename__ = "contacts"
