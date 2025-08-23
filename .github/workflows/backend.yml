@@ -19,6 +19,7 @@ jobs:
         with:
           enable-cache: true
           cache-dependency-glob: "backend/uv.lock"
+          cache-suffix: "python-deps"
 
       - name: Install Dependencies
         run: uv sync --locked --all-extras --dev
@@ -49,6 +50,8 @@ jobs:
           with:
             context: ./backend
             push: true
+            cache-from: type=gha
+            cache-to: type=gha,mode=max
             tags: |
               ${{ vars.DOCKERHUB_USERNAME }}/swe-assessment-backend:latest
               ${{ vars.DOCKERHUB_USERNAME }}/swe-assessment-backend:${{ github.sha }}
