@@ -1,4 +1,5 @@
 import { Outlet } from "react-router";
+import { StarsBackground } from "../animate-ui/backgrounds/stars";
 import { Toaster } from "../ui/sonner";
 import { useTheme } from "../ui/theme-provider";
 import ContactsSideBar from "./ContactsSideBar/ContactsSideBar";
@@ -9,14 +10,12 @@ export default function RootLayout() {
 		theme === "light"
 			? "radial-gradient(125% 125% at 50% 90%, #fff 40%, #6366f1 100%)"
 			: "radial-gradient(125% 125% at 50% 100%, #000000 40%, #010133 100%)";
+
 	return (
 		<div className="min-h-screen w-full relative">
-			{/* Radial Gradient Background from Bottom */}
-			<div
+			<StarsBackground
 				className="absolute inset-0 z-0"
-				style={{
-					background,
-				}}
+				style={{ background }}
 			/>
 
 			<div className="min-h-screen w-full flex flex-col relative">
