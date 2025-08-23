@@ -64,6 +64,7 @@ interface DefaultIconProps<T = string> {
 
 interface AnimateIconProps<T = string> extends DefaultIconProps<T> {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: animate-ui component
 	children: React.ReactElement<any, any>;
 }
 
@@ -309,6 +310,7 @@ function getVariants<
 	if (loop) {
 		for (const key in result) {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			// biome-ignore lint/suspicious/noExplicitAny: animate-ui component
 			const state = result[key] as any;
 			const transition = state.animate?.transition;
 			if (!transition) continue;
