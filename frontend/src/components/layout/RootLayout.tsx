@@ -12,13 +12,13 @@ export default function RootLayout() {
 			: "radial-gradient(125% 125% at 50% 100%, #000000 40%, #010133 100%)";
 
 	return (
-		<div className="min-h-screen w-full relative">
+		<div className="min-h-svh w-full relative">
 			<StarsBackground
 				className="absolute inset-0 z-0"
 				style={{ background }}
 			/>
 
-			<div className="min-h-screen w-full flex flex-col relative">
+			<div className="min-h-svh w-full flex flex-col relative">
 				<div className="flex-1 flex overflow-hidden">
 					<div className="flex-1 flex flex-col min-w-0">
 						<Header />
