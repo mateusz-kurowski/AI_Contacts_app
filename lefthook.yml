@@ -1,32 +1,41 @@
 pre-commit:
+  parallel: true
   commands:
-    check-frontend:
-      glob:
-        - "frontend/*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
+    format-frontend:
+      glob: "frontend/*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
       exclude:
         - "frontend/src/components/ui/**"
         - "frontend/src/lib/**"
-
-      run: npx @biomejs/biome check --no-errors-on-unmatched --files-ignore-unknown=true --write {staged_files}
+      run: npx @biomejs/biome check --staged --write --no-errors-on-unmatched --files-ignore-unknown=true
       stage_fixed: true
       root: frontend
-    check-backend:
-      glob: "backend/**/*.py"
-      run: uvx ruff check --fix --output-format=github {staged_files}
+
+    format-backend:
+      glob: "*.go"
+      run: gofmt -w {staged_files}
       stage_fixed: true
       root: backend
 
+    test-backend-unit:
+      glob: "*.go"
+      run: go test -short -timeout=10s ./...
+      root: backend
+
 pre-push:
+  parallel: true
   commands:
     check-frontend:
-      glob:
-        - "frontend/*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
+      glob: "frontend/*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
       exclude:
         - "frontend/src/components/ui/**"
         - "frontend/src/lib/**"
-      run: npx @biomejs/biome check   --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {push_files}
+      run: npx @biomejs/biome ci --no-errors-on-unmatched {push_files}
       root: frontend
 
-    check-backend:
-      glob: "backend/**/*.py"
-      run: uvx ruff check --output-format=github {push_files}
+    test-backend-integration:
+      run: go test -tags=integration -timeout=30s ./...
+      root: backend
+
+    test-backend-all:
+      run: go test -race -count=1 -timeout=60s ./...
+      root: backend

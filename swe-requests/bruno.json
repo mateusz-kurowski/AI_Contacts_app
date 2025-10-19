@@ -1,6 +1,0 @@
-{
-	"ignore": ["node_modules", ".git"],
-	"name": "swe-requests",
-	"type": "collection",
-	"version": "1"
-}

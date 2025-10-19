@@ -1,8 +1,2 @@
-.venv
-.ruff_cache
-__pycache__
-*.pyc
-
-# Env files
-.env
-.env.local
+contacts
+run.sh

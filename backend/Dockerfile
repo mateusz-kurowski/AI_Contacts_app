@@ -1,15 +1,28 @@
-FROM python:3.13-slim-trixie
+FROM sqlc/sqlc:latest AS sqlc
+WORKDIR /app
+COPY sqlc.yml ./
+COPY db/ ./db/
+RUN sqlc generate
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+FROM golang:1.25-alpine AS builder
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock ./
-
-RUN uv sync --frozen
+COPY go.mod go.sum ./
+RUN go mod download
 
 COPY . .
+COPY --from=sqlc /app/db ./db
 
-EXPOSE 8000
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+    -ldflags='-w -s -extldflags "-static"' \
+    -a -installsuffix cgo \
+    -o contactsService .
 
-CMD ["uv", "run", "fastapi", "run", "src/main.py", "--port", "8000"]
+FROM scratch
+
+COPY --from=builder /app/contactsService /contactsService
+
+EXPOSE 8080
+
+ENTRYPOINT ["/contactsService"]
