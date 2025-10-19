@@ -1,7 +1,7 @@
 import type { Contact } from "../types/contact";
 
 export const getContacts = async (): Promise<Contact[]> => {
-	const response = await fetch(`${import.meta.env.VITE_API_URL}/contacts`);
+	const response = await fetch("/api/contacts");
 	if (!response.ok) {
 		throw new Error("Failed to fetch contacts");
 	}
@@ -11,7 +11,7 @@ export const getContacts = async (): Promise<Contact[]> => {
 export const addContact = async (
 	contact: Omit<Contact, "id">,
 ): Promise<Contact> => {
-	const response = await fetch(`${import.meta.env.VITE_API_URL}/contacts`, {
+	const response = await fetch("/api/contacts", {
 		body: JSON.stringify(contact),
 		headers: {
 			"Content-Type": "application/json",
@@ -27,16 +27,13 @@ export const addContact = async (
 
 export const updateContact = async (contact: Contact): Promise<Contact> => {
 	const { id, ...newContactBody } = contact;
-	const response = await fetch(
-		`${import.meta.env.VITE_API_URL}/contacts/${id}`,
-		{
-			body: JSON.stringify(newContactBody),
-			headers: {
-				"Content-Type": "application/json",
-			},
-			method: "PUT",
+	const response = await fetch(`/api/contacts/${id}`, {
+		body: JSON.stringify(newContactBody),
+		headers: {
+			"Content-Type": "application/json",
 		},
-	);
+		method: "PUT",
+	});
 	if (!response.ok) {
 		console.log("Error updating contact:", response.statusText);
 		throw new Error("Failed to update contact");
@@ -45,12 +42,9 @@ export const updateContact = async (contact: Contact): Promise<Contact> => {
 };
 
 export const deleteContact = async (id: number) => {
-	const response = await fetch(
-		`${import.meta.env.VITE_API_URL}/contacts/${id}`,
-		{
-			method: "DELETE",
-		},
-	);
+	const response = await fetch(`/api/contacts/${id}`, {
+		method: "DELETE",
+	});
 	if (!response.ok) {
 		console.log("Error deleting contact:", response.statusText);
 		throw new Error("Failed to delete contact");

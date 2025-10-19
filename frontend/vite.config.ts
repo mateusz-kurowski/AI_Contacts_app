@@ -10,4 +10,13 @@ export default defineConfig({
 			"@": path.resolve(__dirname, "./src"),
 		},
 	},
+	server: {
+		proxy: {
+			"/api": {
+				changeOrigin: true,
+				secure: false,
+				target: "http://localhost:33500",
+			},
+		},
+	},
 });
