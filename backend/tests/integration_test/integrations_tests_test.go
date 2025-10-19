@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"testing"
 
-	"contactsAI/contacts/db"
 	"contactsAI/contacts/internal/config"
+	"contactsAI/contacts/internal/db"
 	"contactsAI/contacts/internal/handlers"
 	"contactsAI/contacts/internal/routing"
 	integration "contactsAI/contacts/tests/integration_test"
