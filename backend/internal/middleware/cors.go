@@ -17,6 +17,7 @@ func setupCORS(router *gin.Engine) {
 
 	router.Use(cors.New(config))
 }
+
 func SetupMiddlewares(router *gin.Engine) {
 	setupCORS(router)
 }

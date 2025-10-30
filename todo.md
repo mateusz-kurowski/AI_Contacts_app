@@ -1,0 +1,1 @@
+- Generate an avatar for user (uploadable to minIO s3)

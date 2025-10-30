@@ -2,14 +2,20 @@ package config
 
 import (
 	"context"
+	"net/http"
+	"os"
 
 	"contactsAI/contacts/internal/db"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/markbates/goth/gothic"
 )
 
 type Env struct {
 	*db.Queries
+	CookieStore cookie.Store
 }
 
 // NewEnv Create a new Env instance.
@@ -25,5 +31,23 @@ func NewEnv(dbURL string) (*Env, error) {
 		return nil, pingErr
 	}
 
-	return &Env{Queries: db.New(conn)}, nil
+	cookieStore := setupSessionStorage()
+	gothic.Store = cookieStore
+	return &Env{Queries: db.New(conn), CookieStore: cookieStore}, nil
+}
+
+func setupSessionStorage() cookie.Store {
+	sessionSecret, sessionKey := []byte(os.Getenv("SESSION_SECRET")), []byte(os.Getenv("SESSION_KEY"))
+
+	cookieStore := cookie.NewStore(sessionSecret, sessionKey)
+
+	cookieStore.Options(sessions.Options{
+		Path:     "/",
+		MaxAge:   86400 * 7, // 7 days
+		HttpOnly: true,      // Prevent XSS attacks
+		Secure:   true,      // Use only with HTTPS in production
+		SameSite: http.SameSiteLaxMode,
+	})
+
+	return cookieStore
 }

@@ -47,13 +47,13 @@ func TestIntegration(t *testing.T) {
 		w := integration.MkJSONRequest(t, "GET", "/api/contacts/", router, nil)
 		assert.Equal(t, http.StatusOK, w.Code)
 
-		var response handlers.Response[[]db.Contact]
+		var response []handlers.ContactResponse
 		err := json.Unmarshal(w.Body.Bytes(), &response)
 		require.NoError(t, err, "Unmarshaling response failed")
 
-		assert.Len(t, response.Data, 8)
+		assert.Len(t, response, 8)
 
-		first := response.Data[0]
+		first := response[0]
 		assert.Equal(t, "Agnieszka Szymańska", first.Name)
 		assert.Equal(t, "888-999-000", first.Phone)
 	})
@@ -63,12 +63,12 @@ func TestIntegration(t *testing.T) {
 
 		assert.Equal(t, http.StatusOK, w.Code)
 
-		var response handlers.Response[db.Contact]
+		var response handlers.ContactResponse
 		err := json.Unmarshal(w.Body.Bytes(), &response)
 		require.NoError(t, err, "Unmarshaling response failed")
 
-		assert.Equal(t, "Anna Nowak", response.Data.Name)
-		assert.Equal(t, "987-654-321", response.Data.Phone)
+		assert.Equal(t, "Anna Nowak", response.Name)
+		assert.Equal(t, "987-654-321", response.Phone)
 	})
 
 	t.Run("POST /api/contacts with dial", func(t *testing.T) {
@@ -81,14 +81,14 @@ func TestIntegration(t *testing.T) {
 
 		assert.Exactly(t, http.StatusCreated, w.Code)
 
-		var response handlers.Response[db.Contact]
+		var response handlers.ContactResponse
 
 		err := json.Unmarshal(w.Body.Bytes(), &response)
 		require.NoError(t, err, "Unmarshaling response failed")
 
-		assert.Exactly(t, newContactBody.Name, response.Data.Name)
-		assert.Exactly(t, newContactBody.Phone, response.Data.Phone)
-		assert.NotNil(t, response.Data.ID)
+		assert.Exactly(t, newContactBody.Name, response.Name)
+		assert.Exactly(t, newContactBody.Phone, response.Phone)
+		assert.NotNil(t, response.ID)
 	})
 
 	t.Run("PUT /api/contacts", func(t *testing.T) {
@@ -101,23 +101,23 @@ func TestIntegration(t *testing.T) {
 		w := integration.MkJSONRequest(t, "PUT", fmt.Sprintf("/api/contacts/%d", contactID), router, updateBody)
 		assert.Equal(t, http.StatusOK, w.Code)
 
-		var response handlers.Response[db.Contact]
+		var response handlers.ContactResponse
 		assert.NoError(t, json.Unmarshal(w.Body.Bytes(), &response))
 
-		assert.Exactly(t, updateBody.Name, response.Data.Name)
-		assert.Exactly(t, updateBody.Phone, response.Data.Phone)
-		assert.Exactly(t, int32(contactID), response.Data.ID)
+		assert.Exactly(t, updateBody.Name, response.Name)
+		assert.Exactly(t, updateBody.Phone, response.Phone)
+		assert.Exactly(t, int32(contactID), response.ID)
 
 		wUpdatedContact := integration.MkGetContactByIDRequest(t, contactID, router)
 
 		assert.Equal(t, http.StatusOK, wUpdatedContact.Code)
 
-		var updatedContactResponse handlers.Response[db.Contact]
+		var updatedContactResponse handlers.ContactResponse
 		assert.NoError(t, json.Unmarshal(wUpdatedContact.Body.Bytes(), &updatedContactResponse))
 
-		assert.Exactly(t, updateBody.Name, updatedContactResponse.Data.Name)
-		assert.Exactly(t, updateBody.Phone, updatedContactResponse.Data.Phone)
-		assert.Exactly(t, int32(contactID), updatedContactResponse.Data.ID)
+		assert.Exactly(t, updateBody.Name, updatedContactResponse.Name)
+		assert.Exactly(t, updateBody.Phone, updatedContactResponse.Phone)
+		assert.Exactly(t, int32(contactID), updatedContactResponse.ID)
 	})
 
 	t.Run("DELETE /api/contacts", func(t *testing.T) {

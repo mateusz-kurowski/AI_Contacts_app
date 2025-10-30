@@ -1,0 +1,11 @@
+meta {
+  name: well-known-endpoints
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{authentik_url}}/application/o/contacts-ai/.well-known/openid-configuration
+  body: none
+  auth: none
+}

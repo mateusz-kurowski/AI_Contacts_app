@@ -14,8 +14,18 @@ func SetupRouter(env *config.Env) *gin.Engine {
 
 	middleware.SetupMiddlewares(router)
 
-	apiGroup := router.Group("/api")
-	handlers.RegisterContactsRoutes(apiGroup, env)
 	validation.SetupValidation()
+	// Register routes so callers that only call SetupRouter
+	// (for example tests) get a router with all endpoints wired.
+	RegisterRoutes(router, env)
+
 	return router
+}
+
+func RegisterRoutes(router *gin.Engine, env *config.Env) {
+	apiGroup := router.Group("/api")
+
+	// Register routes
+	handlers.RegisterAuthRoutes(apiGroup, env)
+	handlers.RegisterContactsRoutes(apiGroup, env)
 }
