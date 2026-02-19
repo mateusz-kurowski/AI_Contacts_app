@@ -1,6 +1,68 @@
-# Contact Management API
+# AI Contacts
 
-Full-stack contact management app with CRUD operations for contacts (name + phone number).
+Full-stack AI-powered contact management app. Chat with an AI assistant to create, search, update, and delete contacts using natural language.
+
+## Screenshots
+
+### Empty state
+
+Ask the assistant to show contacts when the book is empty.
+
+![Empty state](screenshots/1.png)
+
+### Adding a contact
+
+Create a new contact with name and phone number.
+
+![Adding a contact](screenshots/2.png)
+
+### Bulk add
+
+Add multiple contacts in a single message.
+
+![Bulk add](screenshots/3.png)
+
+### Listing contacts
+
+View all contacts in a formatted list.
+
+![Listing contacts](screenshots/4.png)
+
+### Searching by name
+
+Find contacts by searching for a name.
+
+![Searching by name](screenshots/5.png)
+
+### Finding by phone number
+
+Look up a contact by their phone number.
+
+![Finding by phone number](screenshots/6.png)
+
+### Updating a contact
+
+Update a contact's information by name.
+
+![Updating a contact](screenshots/7.png)
+
+### Verifying the update
+
+Confirm the update was applied correctly.
+
+![Verifying the update](screenshots/8.png)
+
+### Deleting a contact
+
+Remove a contact by name.
+
+![Deleting a contact](screenshots/9.png)
+
+### Final overview
+
+View the remaining contacts after all changes.
+
+![Final overview](screenshots/10.png)
 
 ## Quick Start
 

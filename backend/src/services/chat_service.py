@@ -66,7 +66,9 @@ class ChatService:
 
                         # Collect text from MCP result content blocks
                         result_text = "\n".join(
-                            block.text for block in result if hasattr(block, "text")
+                            block.text
+                            for block in result.content
+                            if hasattr(block, "text")
                         )
 
                         messages.append(

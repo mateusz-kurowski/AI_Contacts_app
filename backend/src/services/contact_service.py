@@ -1,8 +1,8 @@
 from typing import List, Optional
 
 from sqlalchemy.orm import Session
-from src.db.schemas import ContactCreate, ContactUpdate
 from src.db.models.Contact import ContactModel
+from src.db.schemas import ContactCreate, ContactUpdate
 
 
 class ContactService:
@@ -21,6 +21,10 @@ class ContactService:
     def get_contact_by_id(self, db: Session, contact_id: int) -> Optional[ContactModel]:
         """Get detailed information about a specific contact by ID."""
         return db.query(ContactModel).filter(ContactModel.id == contact_id).first()
+
+    def get_contact_by_name(self, db: Session, name: str) -> Optional[ContactModel]:
+        """Get a contact by exact name (case-insensitive)."""
+        return db.query(ContactModel).filter(ContactModel.name.ilike(name)).first()
 
     def create_contact(self, db: Session, contact: ContactCreate) -> ContactModel:
         """Create a new contact."""
@@ -82,6 +86,31 @@ class ContactService:
             db.commit()
             return True
         return False
+
+    def delete_contact_by_name(self, db: Session, name: str) -> bool:
+        """Delete a contact by name (case-insensitive)."""
+        db_contact = (
+            db.query(ContactModel).filter(ContactModel.name.ilike(name)).first()
+        )
+        if db_contact:
+            db.delete(db_contact)
+            db.commit()
+            return True
+        return False
+
+    def update_contact_by_name(
+        self, db: Session, name: str, contact: ContactUpdate
+    ) -> Optional[ContactModel]:
+        """Update a contact found by name (case-insensitive)."""
+        db_contact = (
+            db.query(ContactModel).filter(ContactModel.name.ilike(name)).first()
+        )
+        if db_contact:
+            db_contact.name = contact.name
+            db_contact.phone = contact.phone
+            db.commit()
+            db.refresh(db_contact)
+        return db_contact
 
     def search_contacts(self, db: Session, query: str) -> List[ContactModel]:
         """Search contacts by name or phone number."""

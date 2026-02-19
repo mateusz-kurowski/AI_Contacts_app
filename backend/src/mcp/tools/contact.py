@@ -155,8 +155,39 @@ def register_contact_tools(mcp: FastMCP):
 
     @mcp.tool(
         annotations={
+            "title": "Get Contact by Name",
+            "description": "Retrieve a specific contact by their name",
+        },
+        tags=["contacts"],
+    )
+    def get_contact_by_name(
+        name: Annotated[str, "The name of the contact to retrieve"],
+    ) -> GetContactResponse:
+        """Get a specific contact by their name (case-insensitive)"""
+        db = next(get_db())
+        try:
+            contact = get_contact_service().get_contact_by_name(db, name=name)
+            if not contact:
+                return GetContactResponse(
+                    success=False,
+                    message=Response.CONTACT_NOT_FOUND.value,
+                )
+            return GetContactResponse(
+                success=True,
+                contact=contact,
+            )
+        except Exception as e:
+            return GetContactResponse(
+                success=False,
+                message=f"Failed to get contact: {str(e)}",
+            )
+        finally:
+            db.close()
+
+    @mcp.tool(
+        annotations={
             "title": "Update Contact",
-            "description": "Update an existing contact's information",
+            "description": "Update an existing contact's information by ID",
         },
         tags=["contacts"],
     )
@@ -222,6 +253,94 @@ def register_contact_tools(mcp: FastMCP):
 
     @mcp.tool(
         annotations={
+            "title": "Update Contact by Name",
+            "description": "Update an existing contact found by their current name",
+        },
+        tags=["contacts"],
+    )
+    def update_contact_by_name(
+        current_name: Annotated[str, "The current name of the contact to update"],
+        new_name: Annotated[str, "The new name for the contact"],
+        new_phone: Annotated[str, "The new phone number for the contact"],
+    ) -> GetContactResponse:
+        """Update a contact's information by looking them up by current name (case-insensitive)"""
+        db = next(get_db())
+        try:
+            formatted_number = format_phone_number(new_phone)
+            if not formatted_number:
+                return GetContactResponse(
+                    success=False,
+                    message="Invalid phone number format",
+                )
+            # Check for phone conflicts
+            contact_with_phone = get_contact_service().get_contact_by_phone(
+                db, phone=formatted_number
+            )
+            existing = get_contact_service().get_contact_by_name(db, name=current_name)
+            if contact_with_phone and existing and contact_with_phone.id != existing.id:
+                return GetContactResponse(
+                    success=False,
+                    message="Phone number already registered to another contact",
+                )
+            contact_data = ContactUpdate(name=new_name, phone=formatted_number)
+            updated = get_contact_service().update_contact_by_name(
+                db, name=current_name, contact=contact_data
+            )
+            if not updated:
+                return GetContactResponse(
+                    success=False,
+                    message=Response.CONTACT_NOT_FOUND.value,
+                )
+            return GetContactResponse(
+                success=True,
+                contact=updated,
+            )
+        except ValueError as e:
+            return GetContactResponse(
+                success=False,
+                message=str(e),
+            )
+        except Exception:
+            return GetContactResponse(
+                success=False,
+                message=Response.CONTACT_UPDATE_FAILED.value,
+            )
+        finally:
+            db.close()
+
+    @mcp.tool(
+        annotations={
+            "title": "Delete Contact by Name",
+            "description": "Delete a contact by their name",
+        },
+        tags=["contacts"],
+    )
+    def delete_contact_by_name(
+        name: Annotated[str, "The name of the contact to delete"],
+    ) -> McpResponse:
+        """Delete a contact by their name (case-insensitive)"""
+        db = next(get_db())
+        try:
+            success = get_contact_service().delete_contact_by_name(db, name=name)
+            if not success:
+                return McpResponse(
+                    success=False,
+                    message=Response.CONTACT_NOT_FOUND.value,
+                )
+            return McpResponse(
+                success=True,
+                message=Response.CONTACT_DELETED.value,
+            )
+        except Exception:
+            return McpResponse(
+                success=False,
+                message=Response.CONTACT_DELETION_FAILED.value,
+            )
+        finally:
+            db.close()
+
+    @mcp.tool(
+        annotations={
             "title": "Delete Contact",
             "description": "Delete a contact by their ID",
         },
@@ -234,6 +353,45 @@ def register_contact_tools(mcp: FastMCP):
         db = next(get_db())
         try:
             success = get_contact_service().delete_contact(db, contact_id=contact_id)
+            if not success:
+                return McpResponse(
+                    success=False,
+                    message=Response.CONTACT_NOT_FOUND.value,
+                )
+            return McpResponse(
+                success=True,
+                message=Response.CONTACT_DELETED.value,
+            )
+        except Exception:
+            return McpResponse(
+                success=False,
+                message=Response.CONTACT_DELETION_FAILED.value,
+            )
+        finally:
+            db.close()
+
+    @mcp.tool(
+        annotations={
+            "title": "Delete Contact by Phone",
+            "description": "Delete a contact by their phone number",
+        },
+        tags=["contacts"],
+    )
+    def delete_contact_by_phone(
+        phone: Annotated[str, "The phone number of the contact to delete"],
+    ) -> McpResponse:
+        """Delete a contact by their phone number"""
+        db = next(get_db())
+        try:
+            formatted_number = format_phone_number(phone)
+            if not formatted_number:
+                return McpResponse(
+                    success=False,
+                    message="Invalid phone number format",
+                )
+            success = get_contact_service().delete_contact_by_phone(
+                db, phone=formatted_number
+            )
             if not success:
                 return McpResponse(
                     success=False,
