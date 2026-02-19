@@ -28,9 +28,9 @@ def register_contact_tools(mcp: FastMCP):
                 contacts=contacts,
             )
         except Exception:
-            return GetContactResponse(
+            return GetContactsResponse(
                 success=False,
-                message=Response.CONTACT_RETRIEVAL_FAILED,
+                message=Response.CONTACT_RETRIEVAL_FAILED.value,
             )
         finally:
             db.close()
@@ -52,7 +52,7 @@ def register_contact_tools(mcp: FastMCP):
             if not contact:
                 return GetContactResponse(
                     success=False,
-                    message=Response.CONTACT_NOT_FOUND,
+                    message=Response.CONTACT_NOT_FOUND.value,
                 )
             return GetContactResponse(
                 success=True,
@@ -91,7 +91,7 @@ def register_contact_tools(mcp: FastMCP):
             if not contact:
                 return GetContactResponse(
                     success=False,
-                    message=Response.CONTACT_NOT_FOUND,
+                    message=Response.CONTACT_NOT_FOUND.value,
                 )
             return GetContactResponse(
                 success=True,
@@ -171,6 +171,12 @@ def register_contact_tools(mcp: FastMCP):
         """Update an existing contact's information"""
         db = next(get_db())
         try:
+            formatted_number = format_phone_number(phone)
+            if not formatted_number:
+                return GetContactResponse(
+                    success=False,
+                    message="Invalid phone number format",
+                )
             # Check if contact exists
             existing_contact = get_contact_service().get_contact_by_id(
                 db, contact_id=contact_id
@@ -181,21 +187,21 @@ def register_contact_tools(mcp: FastMCP):
                     message="Contact not found",
                 )
             contact_with_phone = get_contact_service().get_contact_by_phone(
-                db, phone=phone
+                db, phone=formatted_number
             )
             if contact_with_phone and contact_with_phone.id != contact_id:
                 return GetContactResponse(
                     success=False,
                     message="Phone number already registered to another contact",
                 )
-            contact_data = ContactUpdate(name=name, phone=phone)
+            contact_data = ContactUpdate(name=name, phone=formatted_number)
             updated_contact = get_contact_service().update_contact_by_id(
                 db, contact_id=contact_id, contact=contact_data
             )
             if not updated_contact:
                 return GetContactResponse(
                     success=False,
-                    message=Response.CONTACT_UPDATE_FAILED,
+                    message=Response.CONTACT_UPDATE_FAILED.value,
                 )
             return GetContactResponse(
                 success=True,
@@ -209,7 +215,7 @@ def register_contact_tools(mcp: FastMCP):
         except Exception:
             return GetContactResponse(
                 success=False,
-                message=Response.CONTACT_UPDATE_FAILED,
+                message=Response.CONTACT_UPDATE_FAILED.value,
             )
         finally:
             db.close()
@@ -231,16 +237,16 @@ def register_contact_tools(mcp: FastMCP):
             if not success:
                 return McpResponse(
                     success=False,
-                    message=Response.CONTACT_NOT_FOUND,
+                    message=Response.CONTACT_NOT_FOUND.value,
                 )
             return McpResponse(
                 success=True,
-                message=Response.CONTACT_DELETED,
+                message=Response.CONTACT_DELETED.value,
             )
         except Exception:
             return McpResponse(
                 success=False,
-                message=Response.CONTACT_DELETION_FAILED,
+                message=Response.CONTACT_DELETION_FAILED.value,
             )
         finally:
             db.close()
@@ -267,7 +273,7 @@ def register_contact_tools(mcp: FastMCP):
         except Exception:
             return GetContactsResponse(
                 success=False,
-                message=Response.CONTACT_RETRIEVAL_FAILED,
+                message=Response.CONTACT_RETRIEVAL_FAILED.value,
             )
         finally:
             db.close()
@@ -279,20 +285,18 @@ def register_contact_tools(mcp: FastMCP):
         },
         tags=["contacts"],
     )
-    def format_phone_number_tool(
-        phone: str, default_region: str = "PL"
-    ) -> GetContactResponse:
+    def format_phone_number_tool(phone: str, default_region: str = "PL") -> McpResponse:
         """
         Format phone number to E.164.
         Returns None if invalid or cannot be parsed.
         """
         formatted = format_phone_number(phone, default_region)
         if not formatted:
-            return GetContactResponse(
+            return McpResponse(
                 success=False,
-                message=Response.INVALID_PHONE_NUMBER,
+                message=Response.INVALID_PHONE_NUMBER.value,
             )
-        return GetContactResponse(
+        return McpResponse(
             success=True,
-            contact=formatted,
+            message=formatted,
         )

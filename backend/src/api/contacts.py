@@ -3,12 +3,13 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from src.db.db import get_db
-from src.db.schemas import ContactCreate, Contact, ContactUpdate
-from src.services.contact_service import ContactService, get_contact_service
 from src.api.responses import Response
+from src.db.db import get_db
+from src.db.schemas import Contact, ContactCreate, ContactUpdate
+from src.services.contact_service import ContactService, get_contact_service
 
 router = APIRouter(prefix="/contacts", tags=["contacts"])
+
 
 @router.post("/", response_model=Contact)
 @router.post("", response_model=Contact)
@@ -49,7 +50,7 @@ def read_contact(
 ):
     db_contact = svc.get_contact_by_id(db, contact_id=contact_id)
     if db_contact is None:
-        raise HTTPException(status_code=404, detail=Response.CONTACT_NOT_FOUND)
+        raise HTTPException(status_code=404, detail=Response.CONTACT_NOT_FOUND.value)
 
     return Contact.model_validate(db_contact)
 

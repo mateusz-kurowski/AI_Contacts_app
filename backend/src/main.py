@@ -48,15 +48,13 @@ mcp = FastMCP(
     This server provides data about contacts.
     You can use it to retrieve, create, update, and delete contacts.
     """,
-    on_duplicate_tools="error",
-    on_duplicate_prompts="error",
-    on_duplicate_resources="error",
+    on_duplicate="error",
 )
 
 register_contact_tools(mcp)
 register_contacts_prompts(mcp)
 register_chat_prompts(mcp)
-mcp_app = mcp.http_app(path="/mcp")
+mcp_app = mcp.http_app(path="/mcp", transport="streamable-http")
 
 
 app = create_base_app(lifespan=mcp_app.lifespan)

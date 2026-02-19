@@ -1,6 +1,5 @@
+ARG NODE_ENV
 FROM node:22.18.0-alpine AS builder
-
-ENV NODE_ENV=production
 
 WORKDIR /app
 

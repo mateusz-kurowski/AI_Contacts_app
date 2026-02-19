@@ -14,9 +14,11 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 config = context.config
 
 
-db_url = os.getenv("DATABASE_URL")
+db_url = os.getenv("ALEMBIC_DATABASE_URL") or os.getenv("DATABASE_URL")
 if not db_url:
-    raise ValueError("DATABASE_URL environment variable is not set")
+    raise ValueError(
+        "Neither ALEMBIC_DATABASE_URL nor DATABASE_URL environment variable is set"
+    )
 
 config.set_main_option("sqlalchemy.url", db_url)
 
@@ -26,7 +28,6 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # add your model's MetaData object here
-
 
 
 target_metadata = Base.metadata

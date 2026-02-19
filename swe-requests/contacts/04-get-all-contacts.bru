@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: {{api_url}}/contacts
+  url: {{url}}/contacts
   body: none
   auth: inherit
+}
+
+vars:pre-request {
+  api_url: 
 }
 
 tests {
@@ -38,4 +42,5 @@ tests {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

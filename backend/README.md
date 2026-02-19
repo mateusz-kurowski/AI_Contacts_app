@@ -12,8 +12,15 @@ source ./.venv/bin/activate
 uv run fastapi dev src/main.py
 ```
 
-TO run MCP inspector, simply run:
+To run MCP inspector (make sure the backend is running first):
 
 ```bash
 npx @modelcontextprotocol/inspector
 ```
+
+In the inspector UI:
+
+- **Transport Type**: `Streamable HTTP`
+- **URL**: `http://localhost:8000/api/llm/mcp`
+
+Then click **Connect**.

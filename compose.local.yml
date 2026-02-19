@@ -8,15 +8,15 @@ services:
       - stack.env
     volumes:
       - db_data:/var/lib/postgresql/data
-  cache:
-    image: redis:8.2.1
-    restart: always
-    command: redis-server --requirepass ${REDIS_PASSWORD}
-    container_name: redis_cache
-    ports:
-      - "6379:6379"
-    env_file:
-      - stack.env
+  # cache:
+  #   image: redis:8.2.1
+  #   restart: always
+  #   command: redis-server --requirepass ${REDIS_PASSWORD}
+  #   container_name: redis_cache
+  #   ports:
+  #     - "6379:6379"
+  #   env_file:
+  #     - stack.env
   adminer:
     image: adminer
     container_name: adminer
@@ -55,12 +55,14 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - NODE_ENV=production
     container_name: nginx
     ports:
-      - "80:80"
+      - "8081:80"
     depends_on:
       - backend
 
 volumes:
-    db_data:  
-    nginx_logs:
+  db_data:
+  nginx_logs:

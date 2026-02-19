@@ -1,15 +1,14 @@
 import os
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
+
+from src.db.models.Contact import Base
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not DATABASE_URL:
     raise ValueError("DATABASE_URL environment variable is not set")
-
-Base = declarative_base()
 
 engine = create_engine(
     DATABASE_URL,

@@ -1,6 +1,5 @@
 import os
 
-from google.genai.types import GenerateContentConfig
 from pydantic import BaseModel
 
 system_instruction = """You are a helpful AI contact book assistant for managing personal and business contacts efficiently.
@@ -35,15 +34,20 @@ system_instruction = """You are a helpful AI contact book assistant for managing
 - Include relevant emojis to make responses friendly"""
 
 
-model_id = os.getenv("GOOGLE_MODEL_ID")
-if not model_id:
-    model_id = "gemini-2.0-flash"
+model_id = os.getenv("LITELLM_MODEL_ID", "gemini/gemini-2.0-flash")
+
+
+api_base = os.getenv("API_BASE")
+
+
 class AppConfig(BaseModel):
-    model_client: GenerateContentConfig
+    system_instruction: str
     model_id: str
+    api_base: str | None = None
 
 
 model_config = AppConfig(
-    model_client=GenerateContentConfig(system_instruction=system_instruction),
+    system_instruction=system_instruction,
     model_id=model_id,
+    api_base=api_base,
 )
